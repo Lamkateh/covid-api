@@ -23,6 +23,7 @@ public class Center {
     @Column(name = "zip_code")
     private String zipCode;
     private String phone;
+
     private String email;
 
     @OneToMany(mappedBy = "center")
@@ -30,4 +31,22 @@ public class Center {
 
     @OneToMany(mappedBy = "center")
     private List<User> doctors;
+
+    public Center() {
+
+    }
+
+    public Center (int id, String name, String address, String city, String zipCode, String phone, String email) {
+        this.id = id;
+        this.name = name; 
+        this.address = address;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.phone = phone;
+        this.email = email;
+    }
+
+    public String getName(){
+        return this.name.trim();
+    }
 }

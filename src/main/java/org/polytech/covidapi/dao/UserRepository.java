@@ -1,5 +1,7 @@
 package org.polytech.covidapi.dao;
 
+import java.util.List;
+
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
 import org.springframework.data.domain.Page;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     Boolean existsByFirstNameOrLastName(String firstname, String lastname);
-    Page<User> findByFirstNameOrLastName(String firstname, String lastname, Pageable p);
-    Page<User> findByCenter(Center center, Pageable p);
-    Page<User> findAll(Pageable p);
+    List<User> findByFirstNameOrLastName(String firstname, String lastname);
+    List<User> findByCenter(Center center);
+    List<User> findAll();
 }

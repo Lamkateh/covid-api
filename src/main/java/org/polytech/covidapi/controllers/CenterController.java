@@ -1,5 +1,7 @@
 package org.polytech.covidapi.controllers;
 
+import java.util.List;
+
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.entities.Center;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,27 +12,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CenterController {
     
-    @Autowired
+    
     private final CenterRepository centerRepository;
 
     CenterController(CenterRepository centerRepository){
         this.centerRepository = centerRepository;
     }
 
-    @GetMapping("/public/centers/{city}")
-    Page<Center> findAllByCity(@PathVariable String city, @PageableDefault(size = 15) Pageable p) {
-        return centerRepository.findAllByCity(city, p);
+    @GetMapping(path = "/public/centers/city/{city}")
+    List<Center> findAllCentersByCity(@PathVariable String city) {    // TO DO : like 
+        return centerRepository.findAllCentersByCity(city);
     }
 
-    @GetMapping("/public/centers/{name}")
-    Page<Center> findAllByName(@PathVariable String name, @PageableDefault(size = 15) Pageable p) {
-        return centerRepository.findAllByCity(name, p);
+    @GetMapping(path = "/public/centers/name/{name}")
+    List<Center> findAllCentersByName(@PathVariable String name) {    // TO DO : like 
+        return centerRepository.findAllCentersByName(name);
     }
+
+    
+
+    
 
     /* 
     @PostMapping("/admin/center")

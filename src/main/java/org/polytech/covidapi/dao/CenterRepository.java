@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CenterRepository extends JpaRepository<Center, Integer> {
-    
-    Page<Center> findAllByName(String name, Pageable p);
-    Page<Center> findAllByCity(String city, Pageable p);
+
+    List<Center> findAllCentersByCity(String city);
+    List<Center> findAllCentersByName(String name);
+
 }
