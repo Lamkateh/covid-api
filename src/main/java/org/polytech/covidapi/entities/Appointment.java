@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,4 +21,12 @@ public class Appointment {
     private Time time;
     @Column(name = "is_done")
     private boolean isDone;
+    @ManyToOne
+    private Center center;
+
+    @ManyToOne
+    private User patient;
+
+    @ManyToOne
+    private User doctor;
 }
