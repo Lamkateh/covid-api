@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-public class AuthController {
+public class UserController {
 
-    private final UserRepository userRepository;
 
     
 

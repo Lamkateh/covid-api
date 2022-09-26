@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer>{
-    List<Appointment> findByPatientOrderByDate(User patient);
+
+    List<Appointment> findByPatientOrderByDate(User user);
     Page<Appointment> findByDate(Date date);
     Page<Appointment> findAllAfterDate(Date date, Pageable p);
+
 }
