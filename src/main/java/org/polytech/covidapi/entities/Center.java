@@ -52,27 +52,27 @@ public class Center {
     }
 
     public String getName() {
-        return this.name.trim();
+        return this.name != null ? this.name.trim() : this.name;
     }
 
     public String getAddress() {
-        return this.address.trim();
+        return this.address != null ? this.address.trim() : this.address;
     }
 
     public String getCity() {
-        return this.city.trim();
+        return this.city != null ? this.city.trim() : this.city;
     }
 
     public String getZipCode() {
-        return this.zipCode.trim();
+        return this.zipCode != null ? this.zipCode.trim() : this.zipCode;
     }
 
     public String getPhone() {
-        return this.phone.trim();
+        return this.phone != null ? this.phone.trim() : this.phone;
     }
 
     public String getEmail() {
-        return this.email.trim();
+        return this.email != null ? this.email.trim() : this.email;
     }
 
     public List<Appointment> getAppointments() {
