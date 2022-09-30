@@ -26,18 +26,18 @@ public class CenterController {
     }
 
     @GetMapping(path = "/public/centers/city/{city}")
-    List<Center> findAllCentersByCity(@PathVariable String city) {    // TO DO : like 
-        return centerRepository.findAllCentersByCity(city);
+    Page<Center> findAllCentersByCity(@PathVariable String city, @PageableDefault(size = 15) Pageable p) {    // TO DO : like
+        return centerRepository.findAllCentersByCity(city, p);
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
-    List<Center> findAllCentersByName(@PathVariable String name) {    // TO DO : like 
-        return centerRepository.findAllCentersByName(name);
+    Page<Center> findAllCentersByName(@PathVariable String name, @PageableDefault(size = 15) Pageable p) {    // TO DO : like
+        return centerRepository.findAllCentersByName(name, p);
     }
 
     @GetMapping(path = "/public/centers")
-    List<Center> findAllCenters() {    // TO DO : like
-        return centerRepository.findAllByOrderByIdAsc();
+    Page<Center> findAllCenters(@PageableDefault(size = 15) Pageable p) {    // TO DO : like
+        return centerRepository.findAllByOrderByIdAsc(p);
     }
 
     @GetMapping(path = "/public/center/{id}")
