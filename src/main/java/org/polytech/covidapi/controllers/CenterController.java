@@ -35,6 +35,11 @@ public class CenterController {
         return centerRepository.findAllCentersByName(name);
     }
 
+    @GetMapping(path = "/public/centers")
+    List<Center> findAllCenters() {    // TO DO : like
+        return centerRepository.findAllByOrderByIdAsc();
+    }
+
     
 
     
