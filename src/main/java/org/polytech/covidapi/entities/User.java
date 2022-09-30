@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,16 +30,16 @@ public class User {
     @Column(name = "birth_date")
     private Date birthDate;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private List<Appointment> appointmentsAsPatient;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
     private List<Appointment> appointmentsAsDoctor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Center center;
 
     //Getters

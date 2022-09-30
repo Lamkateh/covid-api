@@ -2,6 +2,7 @@ package org.polytech.covidapi.controllers;
 
 import java.util.List;
 
+import liquibase.repackaged.org.apache.commons.text.WordUtils;
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.entities.Center;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +28,19 @@ public class CenterController {
 
     @GetMapping(path = "/public/centers/city/{city}")
     Page<Center> findAllCentersByCity(@PathVariable String city, @PageableDefault(size = 15) Pageable p) {    // TO DO : like
+        city = WordUtils.capitalizeFully(city);
         return centerRepository.findAllCentersByCity(city, p);
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
     Page<Center> findAllCentersByName(@PathVariable String name, @PageableDefault(size = 15) Pageable p) {    // TO DO : like
+        name = WordUtils.capitalizeFully(name);
         return centerRepository.findAllCentersByName(name, p);
     }
 
     @GetMapping(path = "/public/centers")
     Page<Center> findAllCenters(@PageableDefault(size = 15) Pageable p) {    // TO DO : like
-        return centerRepository.findAllByOrderByIdAsc(p);
+        return centerRepository.findAllByOrderByCityAsc(p);
     }
 
     @GetMapping(path = "/public/center/{id}")

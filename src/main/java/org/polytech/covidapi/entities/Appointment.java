@@ -5,6 +5,7 @@ import java.sql.Time;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,13 +23,13 @@ public class Appointment {
     private Time time;
     @Column(name = "is_done")
     private boolean isDone;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Center center;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User patient;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User doctor;
 
     // Getters

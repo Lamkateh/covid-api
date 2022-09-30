@@ -14,7 +14,7 @@ public interface CenterRepository extends JpaRepository<Center, Integer> {
 
     Page<Center> findAllCentersByCity(String city, Pageable p);
     Page<Center> findAllCentersByName(String name, Pageable p);
-    Page<Center> findAllByOrderByIdAsc(Pageable p);
+    Page<Center> findAllByOrderByCityAsc(Pageable p);
     Center findFirstById(int id);
 
 }
