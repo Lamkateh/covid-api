@@ -40,4 +40,97 @@ public class User {
 
     @ManyToOne
     private Center center;
+
+    //Getters
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public Date getBirthDate() {
+        return this.birthDate;
+    }
+
+    public List<Role> getRoles() {
+        return this.roles;
+    }
+
+    public List<Appointment> getAppointmentsAsPatient() {
+        return this.appointmentsAsPatient;
+    }
+
+    public List<Appointment> getAppointmentsAsDoctor() {
+        return this.appointmentsAsDoctor;
+    }
+
+    public Center getCenter() {
+        return this.center;
+    }
+
+    //Setters
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setAppointmentsAsPatient(List<Appointment> appointmentsAsPatient) {
+        this.appointmentsAsPatient = appointmentsAsPatient;
+    }
+
+    public void setAppointmentsAsDoctor(List<Appointment> appointmentsAsDoctor) {
+        this.appointmentsAsDoctor = appointmentsAsDoctor;
+    }
+
+    public void setCenter(Center center) {
+        this.center = center;
+    }
+
+    
 }

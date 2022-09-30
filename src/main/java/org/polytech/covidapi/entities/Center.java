@@ -46,7 +46,78 @@ public class Center {
         this.email = email;
     }
 
-    public String getName(){
+    //Getters with trim
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getName() {
         return this.name.trim();
     }
+
+    public String getAddress() {
+        return this.address.trim();
+    }
+
+    public String getCity() {
+        return this.city.trim();
+    }
+
+    public String getZipCode() {
+        return this.zipCode.trim();
+    }
+
+    public String getPhone() {
+        return this.phone.trim();
+    }
+
+    public String getEmail() {
+        return this.email.trim();
+    }
+
+    public List<Appointment> getAppointments() {
+        return this.appointments;
+    }
+
+    public List<User> getDoctors() {
+        return this.doctors;
+    }
+
+    //Setters
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public void setDoctors(List<User> doctors) {
+        this.doctors = doctors;
+    }
+
 }

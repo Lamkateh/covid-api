@@ -19,4 +19,31 @@ public class Role {
 
     @ManyToMany
     private List<User> users;
+
+    // Getters
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public List<User> getUsers() {
+        return this.users;
+    }
+
+
+    // Setters
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 }
