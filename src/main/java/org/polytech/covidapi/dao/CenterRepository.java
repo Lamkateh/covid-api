@@ -14,5 +14,6 @@ public interface CenterRepository extends JpaRepository<Center, Integer> {
     List<Center> findAllCentersByCity(String city);
     List<Center> findAllCentersByName(String name);
     List<Center> findAllByOrderByIdAsc();
+    Center findFirstById(int id);
 
 }

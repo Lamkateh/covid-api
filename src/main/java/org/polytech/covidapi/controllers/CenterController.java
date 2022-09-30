@@ -40,6 +40,11 @@ public class CenterController {
         return centerRepository.findAllByOrderByIdAsc();
     }
 
+    @GetMapping(path = "/public/center/{id}")
+    Center findCenterById(@PathVariable("id") int id) {
+        return centerRepository.findFirstById(id);
+    }
+
     
 
     
