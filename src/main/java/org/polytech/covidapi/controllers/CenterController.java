@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CenterController {
     
-    
+    @Autowired
     private final CenterRepository centerRepository;
 
     CenterController(CenterRepository centerRepository){

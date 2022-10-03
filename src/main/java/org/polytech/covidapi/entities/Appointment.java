@@ -1,7 +1,7 @@
 package org.polytech.covidapi.entities;
 
-import java.util.Date;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +19,8 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Date date;
-    private Time time;
+    private LocalDate date;
+    private LocalTime time;
     @Column(name = "is_done")
     private boolean isDone;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,16 +32,35 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User doctor;
 
+
+    public Appointment(){
+
+    }
+    public Appointment(LocalDate date, LocalTime time) {
+        this.date =date; 
+        this.time = time;
+        //this.center = center;
+    }
+
+    public Appointment(LocalDate date, LocalTime time, boolean isDone, Center center, User patient, User doctor) {
+        this.date = date;
+        this.time = time;
+        this.isDone = isDone;
+        this.center = center;
+        this.patient = patient;
+        this.doctor = doctor;
+    }
+
     // Getters
     public Integer getId() {
         return this.id;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return this.date;
     }
 
-    public Time getTime() {
+    public LocalTime getTime() {
         return this.time;
     }
 
@@ -66,11 +85,11 @@ public class Appointment {
         this.id = id;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public void setTime(Time time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 

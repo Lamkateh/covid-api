@@ -39,7 +39,7 @@ public class User {
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
     private List<Appointment> appointmentsAsDoctor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Center.class)
     private Center center;
 
     //Getters
