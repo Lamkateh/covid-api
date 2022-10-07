@@ -12,6 +12,8 @@ import org.polytech.covidapi.dao.AppointmentRepository;
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.dao.UserRepository;
 import org.polytech.covidapi.dto.AppointmentView;
+import org.polytech.covidapi.dto.AppointmentsCenterView;
+import org.polytech.covidapi.dto.DayView;
 import org.polytech.covidapi.entities.Appointment;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
@@ -38,12 +40,15 @@ public class AppointmentController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping(path = "/public/appointments/{id}")
-    List<AppointmentView> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) { // TO DO : like
+    @GetMapping(path = "/public/center/{id}/appointments")
+    AppointmentsCenterView findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) { // TO DO : like
 
+        List<DayView> days = new ArrayList<DayView>();
         List<AppointmentView> appointmentsAvailable = new ArrayList<AppointmentView>();
         LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now().minusNanos(LocalTime.now().getNano());
+        LocalTime time = LocalTime.now().minusSeconds(LocalTime.now().getSecond())
+                .minusNanos(LocalTime.now().getNano());
+        LocalTime startTime = LocalTime.of(8, 0);
         LocalTime closeTime = LocalTime.of(18, 0);
         Center center = centerRepository.findFirstById(center_id);
 
@@ -59,30 +64,33 @@ public class AppointmentController {
             if (day == 0) {
                 int unroundedMinutes = time.getMinute();
                 int mod = unroundedMinutes % 15;
-                LocalTime timeRounded = time.plusMinutes(mod < 8 ? -mod : (15 - mod));
+                LocalTime timeRounded = time.plusMinutes((15 - mod));
                 while (timeRounded.isBefore(closeTime)) {
                     if (!timeUnavailable.contains(timeRounded)) {
-                        AppointmentView appointment = new AppointmentView(timeRounded, newDate, center.getId());
+                        AppointmentView appointment = new AppointmentView(timeRounded, center.getId());
                         appointmentsAvailable.add(appointment);
                     }
                     timeRounded = timeRounded.plusMinutes(15);
                 }
             } else {
                 LocalTime baseTime = LocalTime.of(8, 0); // 8h
-                while (baseTime.isBefore(closeTime)) // Jusqu'a 18h 
+                while (baseTime.isBefore(closeTime)) // Jusqu'a 18h
                 {
                     if (!timeUnavailable.contains(baseTime)) {
-                        AppointmentView appointment = new AppointmentView(baseTime, newDate, center.getId());
+                        AppointmentView appointment = new AppointmentView(baseTime, center.getId());
                         appointmentsAvailable.add(appointment);
                     }
                     baseTime = baseTime.plusMinutes(15);
                 }
             }
+            DayView dayView = new DayView(newDate, appointmentsAvailable);
+            days.add(dayView);
         }
-        return appointmentsAvailable;
+        AppointmentsCenterView appointments = new AppointmentsCenterView(days, startTime, closeTime);
+        return appointments;
     }
 
-    @PostMapping(path = "/public/appointments/{id}")
+    @PostMapping(path = "/public/center/{id}/appointments")
     void registerAppointment(@PathVariable("id") int center_id, @RequestParam("doctor_id") int doctor_id,
             @RequestBody User user, @RequestParam("date") String date, @RequestParam("time") String time) {
         Center center = centerRepository.findFirstById(center_id);
