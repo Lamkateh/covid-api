@@ -1,6 +1,7 @@
 package org.polytech.covidapi.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
@@ -16,5 +17,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByCenter(Center center);
     List<User> findAll();
     User findFirstById(int id);
-    User findFirstByEmail(String email);
+    Optional<User> findFirstByEmail(String email);
+    List<User> findUsersByCenter
 }

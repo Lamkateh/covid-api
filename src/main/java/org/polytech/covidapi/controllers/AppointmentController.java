@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.polytech.covidapi.dao.AppointmentRepository;
 import org.polytech.covidapi.dao.CenterRepository;
@@ -98,8 +99,8 @@ public class AppointmentController {
         LocalDate dateParsed = LocalDate.parse(date);
         LocalTime timeParsed = LocalTime.parse(time);
         userRepository.save(user);
-        User userSaved = userRepository.findFirstByEmail(user.getEmail());
-        Appointment appointmentScheduled = new Appointment(dateParsed, timeParsed, false, center, userSaved, doctor);
+        Optional<User> userSaved = userRepository.findFirstByEmail(user.getEmail());
+        Appointment appointmentScheduled = new Appointment(dateParsed, timeParsed, false, center, userSaved.get(), doctor);
         appointmentRepository.save(appointmentScheduled);
     }
 

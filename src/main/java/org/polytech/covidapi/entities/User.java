@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,8 +31,8 @@ public class User {
     @Column(name = "birth_date")
     private Date birthDate;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private List<Role> roles;
+    @ElementCollection
+    private List<String> roles;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private List<Appointment> appointmentsAsPatient;
@@ -42,7 +43,7 @@ public class User {
     @ManyToOne(targetEntity = Center.class)
     private Center center;
 
-    //Getters
+    // Getters
     public Integer getId() {
         return this.id;
     }
@@ -71,7 +72,7 @@ public class User {
         return this.birthDate;
     }
 
-    public List<Role> getRoles() {
+    public List<String> getRoles() {
         return this.roles;
     }
 
@@ -87,7 +88,7 @@ public class User {
         return this.center;
     }
 
-    //Setters
+    // Setters
 
     public void setId(Integer id) {
         this.id = id;
@@ -117,7 +118,7 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
@@ -133,5 +134,4 @@ public class User {
         this.center = center;
     }
 
-    
 }
