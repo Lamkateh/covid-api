@@ -1,7 +1,6 @@
 package org.polytech.covidapi.dto;
 
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AppointmentView {

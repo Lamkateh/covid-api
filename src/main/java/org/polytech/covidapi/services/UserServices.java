@@ -8,8 +8,6 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.polytech.covidapi.dao.UserRepository;
-import org.polytech.covidapi.entities.ERole;
-import org.polytech.covidapi.entities.Role;
 import org.polytech.covidapi.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

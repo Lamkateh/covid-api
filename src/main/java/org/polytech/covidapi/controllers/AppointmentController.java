@@ -1,11 +1,8 @@
 package org.polytech.covidapi.controllers;
 
 import java.time.LocalTime;
-import java.util.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,9 +16,6 @@ import org.polytech.covidapi.entities.Appointment;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.bytebuddy.asm.Advice.Local;
 
 @RestController
 public class AppointmentController {

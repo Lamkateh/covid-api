@@ -20,18 +20,16 @@ public class SecurityConfig {
             throws Exception {
 
         http.authorizeHttpRequests((authz) -> authz
-                .mvcMatchers("/public").permitAll()
-                .mvcMatchers("/private").authenticated()
-                .mvcMatchers("/private/admin").hasAuthority("ADMIN")
-                .mvcMatchers("/private/superAdmin").hasAuthority("SUPER_ADMIN")
-                .mvcMatchers("/private/user").hasAuthority("USER")
-                .mvcMatchers("/private/doctor").hasAuthority("DOCTOR"))
+                // ajouter les règles de la plus spécifique à la plus générale
+                .antMatchers("/private/**").authenticated()
+                .antMatchers("/public/**").permitAll()
+
+        )
                 .httpBasic(withDefaults())
                 .cors().disable()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);// On rend les session stateless
-                
 
         return http.build();
     }
