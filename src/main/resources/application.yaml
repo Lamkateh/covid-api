@@ -11,3 +11,8 @@ spring:
   liquibase:
     enabled: false
     change-log: "classpath:db/changelog/dbchangelog.xml"
+  management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics

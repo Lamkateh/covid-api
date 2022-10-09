@@ -23,6 +23,10 @@ public class SecurityConfig {
                 // ajouter les règles de la plus spécifique à la plus générale
                 .antMatchers("/private/**").authenticated()
                 .antMatchers("/public/**").permitAll()
+                .mvcMatchers("/private/admin").hasAnyRole("ADMIN" , "SUPER_ADMIN")
+                .mvcMatchers("/private/superAdmin").hasRole("SUPER_ADMIN")
+                .mvcMatchers("/private/user").hasRole("USER")
+                .mvcMatchers("/private/doctor").hasRole("DOCTOR")
 
         )
                 .httpBasic(withDefaults())
