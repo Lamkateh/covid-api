@@ -31,20 +31,20 @@ public class UserServices implements UserDetailsService {
 
     @PostConstruct
     public void createUserDefault() {
-        User user = new User();
-        List<String> roles = new ArrayList<String>();
-        roles.add("USER");
-        user.setEmail("user@gmail.com");
-        user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode("password"));
-        this.userRepository.save(user);
-        User admin = new User();
-        admin.setEmail("admin@gmail.com");
-        List<String> rolesAdmin = new ArrayList<String>();
-        rolesAdmin.add("ADMIN");
-        admin.setRoles(rolesAdmin);
-        admin.setPassword(passwordEncoder.encode("password"));
-        this.userRepository.save(admin);
+        //User user = new User();
+        //List<String> roles = new ArrayList<String>();
+        //roles.add("USER");
+        //user.setEmail("user@gmail.com");
+        //user.setRoles(roles);
+        //user.setPassword(passwordEncoder.encode("password"));
+        //this.userRepository.save(user);
+        //User admin = new User();
+        //admin.setEmail("admin@gmail.com");
+        //List<String> rolesAdmin = new ArrayList<String>();
+        //rolesAdmin.add("ADMIN");
+        //admin.setRoles(rolesAdmin);
+        //admin.setPassword(passwordEncoder.encode("password"));
+        //this.userRepository.save(admin);
     }
 
     @Override
