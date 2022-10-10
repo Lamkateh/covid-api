@@ -1,5 +1,6 @@
 package org.polytech.covidapi.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class User {
     private String password;
     private String phone;
     @Column(name = "birth_date")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @ElementCollection
     private List<String> roles;
@@ -68,7 +69,7 @@ public class User {
         return this.phone;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return this.birthDate;
     }
 
@@ -114,7 +115,7 @@ public class User {
         this.phone = phone;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 

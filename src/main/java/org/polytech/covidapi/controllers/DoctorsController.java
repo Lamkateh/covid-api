@@ -10,7 +10,9 @@ import org.polytech.covidapi.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class DoctorsController {
 
     @Autowired
@@ -24,7 +26,7 @@ public class DoctorsController {
         this.centerRepository = centerRepository;
     }
 
-    @GetMapping(path = ("/private/admin/center/{id}/doctors"))
+    @GetMapping(path = "/public/admin/center/{id}/doctors")
     List<User> findAllDoctorsByCenter(@PathVariable("id") int center_id) {
         List<User> doctors = new ArrayList<User>();
         Center center = centerRepository.findFirstById(center_id);

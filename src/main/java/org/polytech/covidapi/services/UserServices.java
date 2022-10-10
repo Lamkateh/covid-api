@@ -35,16 +35,24 @@ public class UserServices implements UserDetailsService {
         List<String> roles = new ArrayList<String>();
         roles.add("USER");
         user.setEmail("user@gmail.com");
+        Optional<User> userSearch = userRepository.findFirstByEmail("user@gmail.com");
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode("password"));
-        this.userRepository.save(user);
+        if (!userSearch.isPresent()) {
+            this.userRepository.save(user);
+        }
+
         User admin = new User();
         admin.setEmail("admin@gmail.com");
         List<String> rolesAdmin = new ArrayList<String>();
         rolesAdmin.add("ADMIN");
         admin.setRoles(rolesAdmin);
         admin.setPassword(passwordEncoder.encode("password"));
-        this.userRepository.save(admin);
+        Optional<User> adminSearch = userRepository.findFirstByEmail("admin@gmail.com");
+        if (!adminSearch.isPresent()) {
+            this.userRepository.save(admin);
+        }
+
     }
 
     @Override
