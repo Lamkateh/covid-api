@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 public class AppointmentController {
 
@@ -38,7 +37,6 @@ public class AppointmentController {
     AppointmentsCenterView findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) { // TO DO : like
 
         List<DayView> days = new ArrayList<DayView>();
-        List<AppointmentView> appointmentsAvailable = new ArrayList<AppointmentView>();
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now().minusSeconds(LocalTime.now().getSecond())
                 .minusNanos(LocalTime.now().getNano());
@@ -47,6 +45,8 @@ public class AppointmentController {
         Center center = centerRepository.findFirstById(center_id);
 
         for (int day = 0; day < 7; day++) {
+
+            List<AppointmentView> appointmentsAvailable = new ArrayList<AppointmentView>();
             LocalDate newDate = date.plusDays(day);
             List<Appointment> appointmentsUnavailable = appointmentRepository.findAppointmentsByCenterAndDate(center,
                     newDate);
@@ -93,7 +93,8 @@ public class AppointmentController {
         LocalTime timeParsed = LocalTime.parse(time);
         userRepository.save(user);
         Optional<User> userSaved = userRepository.findFirstByEmail(user.getEmail());
-        Appointment appointmentScheduled = new Appointment(dateParsed, timeParsed, false, center, userSaved.get(), doctor);
+        Appointment appointmentScheduled = new Appointment(dateParsed, timeParsed, false, center, userSaved.get(),
+                doctor);
         appointmentRepository.save(appointmentScheduled);
     }
 
