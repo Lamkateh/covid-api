@@ -2,14 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Build JAR') {
-            steps {
-                echo 'Building JAR..'
-            }
-        }
         stage('Build docker image') {
             steps {
-                echo 'Building docker image..'
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
             }
         }
         stage('Deploy') {
