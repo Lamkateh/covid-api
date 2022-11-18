@@ -1,5 +1,14 @@
 pipeline {
     agent any
+    options{
+        buildDiscarder(logRotator(numToKeepStr: '5', daysToKeepStr: '5'))
+        timestamps()
+    }
+    environment{
+        
+        registry = "lamkateh/covid-api"
+        registryCredential = 'dockerhub'
+    }
 
     stages {
         stage('Build docker image') {
@@ -11,7 +20,10 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                    dockerImage.push()
+                }
             }
         }
     }
