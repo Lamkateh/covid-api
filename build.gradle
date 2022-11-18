@@ -24,6 +24,10 @@ dependencies {
   	implementation "org.springframework.boot:spring-boot-starter-actuator"
 }
 
+jar{
+    archiveName 'covid-api.jar'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
