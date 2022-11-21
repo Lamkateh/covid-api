@@ -3,6 +3,8 @@ package org.polytech.covidapi.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class DayView {
 
     private LocalDate Date;
@@ -17,6 +19,7 @@ public class DayView {
         this.appointments = appointments;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate getDate() {
         return Date;
     }
