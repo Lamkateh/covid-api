@@ -4,22 +4,24 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.polytech.covidapi.dao.AppointmentRepository;
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.dao.UserRepository;
-import org.polytech.covidapi.dto.AppointmentView;
 import org.polytech.covidapi.dto.AppointmentsCenterView;
 import org.polytech.covidapi.dto.DayView;
+import org.polytech.covidapi.dto.appointment.AppointmentPreviewView;
+import org.polytech.covidapi.dto.appointment.AppointmentView;
 import org.polytech.covidapi.entities.Appointment;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
+import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +36,8 @@ public class AppointmentController {
     private UserRepository userRepository;
 
     @GetMapping(path = "/public/center/{id}/appointments")
-    AppointmentsCenterView findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) { // TO DO : like
+    public ResponseEntity<Object> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) {
+        // TO DO : like
 
         List<DayView> days = new ArrayList<DayView>();
         LocalDate date = LocalDate.now();
@@ -46,7 +49,7 @@ public class AppointmentController {
 
         for (int day = 0; day < 7; day++) {
 
-            List<AppointmentView> appointmentsAvailable = new ArrayList<AppointmentView>();
+            List<AppointmentPreviewView> appointmentsAvailable = new ArrayList<AppointmentPreviewView>();
             LocalDate newDate = date.plusDays(day);
             List<Appointment> appointmentsUnavailable = appointmentRepository.findAppointmentsByCenterAndDate(center,
                     newDate);
@@ -61,7 +64,7 @@ public class AppointmentController {
                 LocalTime timeRounded = time.plusMinutes((15 - mod));
                 while (timeRounded.isBefore(closeTime)) {
                     if (!timeUnavailable.contains(timeRounded)) {
-                        AppointmentView appointment = new AppointmentView(timeRounded, center.getId());
+                        AppointmentPreviewView appointment = new AppointmentPreviewView(timeRounded, center.getId());
                         appointmentsAvailable.add(appointment);
                     }
                     timeRounded = timeRounded.plusMinutes(15);
@@ -71,7 +74,7 @@ public class AppointmentController {
                 while (baseTime.isBefore(closeTime)) // Jusqu'a 18h
                 {
                     if (!timeUnavailable.contains(baseTime)) {
-                        AppointmentView appointment = new AppointmentView(baseTime, center.getId());
+                        AppointmentPreviewView appointment = new AppointmentPreviewView(baseTime, center.getId());
                         appointmentsAvailable.add(appointment);
                     }
                     baseTime = baseTime.plusMinutes(15);
@@ -80,22 +83,56 @@ public class AppointmentController {
             DayView dayView = new DayView(newDate, appointmentsAvailable);
             days.add(dayView);
         }
-        AppointmentsCenterView appointments = new AppointmentsCenterView(days, startTime, closeTime);
-        return appointments;
+        return ResponseHandler.generateResponse("Appointment successfully retrieved", HttpStatus.OK,
+                new AppointmentsCenterView(days, startTime, closeTime));
     }
 
-    @PostMapping(path = "/public/center/{id}/appointments")
-    void registerAppointment(@PathVariable("id") int center_id, @RequestParam("doctor_id") int doctor_id,
-            @RequestBody User user, @RequestParam("date") String date, @RequestParam("time") String time) {
-        Center center = centerRepository.findFirstById(center_id);
-        User doctor = userRepository.findFirstById(doctor_id);
-        LocalDate dateParsed = LocalDate.parse(date);
-        LocalTime timeParsed = LocalTime.parse(time);
-        userRepository.save(user);
-        Optional<User> userSaved = userRepository.findFirstByEmail(user.getEmail());
-        Appointment appointmentScheduled = new Appointment(dateParsed, timeParsed, false, center, userSaved.get(),
-                doctor);
-        appointmentRepository.save(appointmentScheduled);
-    }
+    @PostMapping(path = "/private/center/{id}/appointments")
+    public ResponseEntity<Object> registerAppointment(@PathVariable("id") int center_id,
+            @RequestParam("patient_id") String patient_id,
+            @RequestParam("time") String time,
+            @RequestParam("date") String date) {
+        Center center = null;
+        try {
+            center = centerRepository.findFirstById(center_id);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseHandler.generateResponse("Center not found", HttpStatus.NOT_FOUND, null);
+        }
 
+        // parse int patient_id
+        int patient_id_int = 0;
+        try {
+            patient_id_int = Integer.parseInt(patient_id);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse("Patient not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        User patient = null;
+        try {
+            patient = userRepository.findFirstById(patient_id_int);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseHandler.generateResponse("Patient not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        int doctorsNumber = center.getDoctors().size();
+        if (doctorsNumber == 0) {
+            return ResponseHandler.generateResponse("Doctor not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        // Get random doctor
+        User doctor = center.getDoctors().get((int) (Math.random() * doctorsNumber));
+
+        LocalTime timeObj = LocalTime.parse(time);
+        LocalDate dateObj = LocalDate.parse(date);
+
+        Appointment appointment = new Appointment(dateObj, timeObj, false, center,
+                patient, doctor);
+
+        appointmentRepository.save(appointment);
+        return ResponseHandler.generateResponse("Appointment successfully registered", HttpStatus.OK,
+                new AppointmentView(appointment.getTime(), appointment.getDate(),
+                        appointment.getCenter().getId()));
+    }
 }

@@ -3,18 +3,20 @@ package org.polytech.covidapi.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.polytech.covidapi.dto.appointment.AppointmentPreviewView;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class DayView {
 
     private LocalDate Date;
-    private List<AppointmentView> appointments;
+    private List<AppointmentPreviewView> appointments;
 
     public DayView() {
 
     }
 
-    public DayView(LocalDate date, List<AppointmentView> appointments) {
+    public DayView(LocalDate date, List<AppointmentPreviewView> appointments) {
         Date = date;
         this.appointments = appointments;
     }
@@ -28,11 +30,11 @@ public class DayView {
         Date = date;
     }
 
-    public List<AppointmentView> getAppointments() {
+    public List<AppointmentPreviewView> getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(List<AppointmentView> appointments) {
+    public void setAppointments(List<AppointmentPreviewView> appointments) {
         this.appointments = appointments;
     }
 }

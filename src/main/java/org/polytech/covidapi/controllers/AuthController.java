@@ -8,9 +8,9 @@ import java.util.Optional;
 import org.polytech.covidapi.dao.UserRepository;
 import org.polytech.covidapi.dto.ProfileView;
 import org.polytech.covidapi.entities.User;
-import org.polytech.covidapi.security.MessageResponse;
-import org.polytech.covidapi.services.UserServices;
+import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,30 +38,34 @@ public class AuthController {
     }
 
     @GetMapping(path = "/private/me")
-    public ProfileView getUserDetails() {
+    public ResponseEntity<Object> getUserDetails() {
         UserDetails details = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userEmail = details.getUsername();
         Optional<User> user = userRepository.findFirstByEmail(userEmail);
         if (user.isPresent()) {
-            return new ProfileView(user.get());
+            return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK,
+                    new ProfileView(user.get()));
         }
-        return null;
+        return ResponseHandler.generateResponse("User not found", HttpStatus.NOT_FOUND, null);
     }
 
     @PostMapping(path = "/public/signin")
-    public ResponseEntity<?> login(@RequestParam("email") String email, @RequestParam("password") String password) {
-
+    public ResponseEntity<Object> login(@RequestParam("email") String email,
+            @RequestParam("password") String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password));
-            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error :Incorrect username or password. "));
+            return ResponseHandler.generateResponse("Invalid credentials", HttpStatus.BAD_REQUEST, null);
         }
+
+        User user = userRepository.findFirstByEmail(email).get();
+        return ResponseHandler.generateResponse("User successfully logged in", HttpStatus.OK,
+                new ProfileView(user));
     }
 
     @PostMapping(path = "/public/signup")
-    public ResponseEntity<?> signup(@RequestParam("first_name") String first_name,
+    public ResponseEntity<Object> signup(@RequestParam("first_name") String first_name,
             @RequestParam("last_name") String last_name,
             @RequestParam("email") String email, @RequestParam("password") String password,
             @RequestParam(value = "phone", required = false) String phone,
@@ -69,7 +73,7 @@ public class AuthController {
 
         Optional<User> userSearch = userRepository.findFirstByEmail(email);
         if (userSearch.isPresent()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
         }
         User user = new User();
         user.setFirstName(first_name);
@@ -82,7 +86,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
     }
 
     @PostMapping(path = "/private/superAdmin/signup/admin")
@@ -93,7 +97,7 @@ public class AuthController {
             @RequestParam(value = "birth_date", required = false) LocalDate birthDate) {
         Optional<User> userSearch = userRepository.findFirstByEmail(email);
         if (userSearch.isPresent()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
         }
         User user = new User();
         user.setFirstName(first_name);
@@ -106,7 +110,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
     }
 
     @PostMapping(path = "/private/admin/signup/doctors")
@@ -117,7 +121,7 @@ public class AuthController {
             @RequestParam(value = "birth_date", required = false) LocalDate birthDate) {
         Optional<User> userSearch = userRepository.findFirstByEmail(email);
         if (userSearch.isPresent()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
         }
         User user = new User();
         user.setFirstName(first_name);
@@ -130,7 +134,6 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
     }
-
 }

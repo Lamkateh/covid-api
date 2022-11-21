@@ -1,19 +1,19 @@
-package org.polytech.covidapi.dto;
+package org.polytech.covidapi.dto.appointment;
 
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class AppointmentView {
+public class AppointmentPreviewView {
 
     private LocalTime Time;
     private int centerId;
 
-    public AppointmentView() {
+    public AppointmentPreviewView() {
 
     }
 
-    public AppointmentView(LocalTime time, int centerId) {
+    public AppointmentPreviewView(LocalTime time, int centerId) {
         Time = time;
         this.centerId = centerId;
     }
