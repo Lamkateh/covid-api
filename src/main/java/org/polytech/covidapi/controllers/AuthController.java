@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.polytech.covidapi.dao.UserRepository;
+import org.polytech.covidapi.dto.ProfileView;
 import org.polytech.covidapi.entities.User;
 import org.polytech.covidapi.security.MessageResponse;
 import org.polytech.covidapi.services.UserServices;
@@ -45,10 +46,14 @@ public class AuthController {
     }
 
     @GetMapping(path = "/private/me")
-    public Optional<User> getUserDetails() {
+    public ProfileView getUserDetails() {
         UserDetails details = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userEmail = details.getUsername();
-        return userRepository.findFirstByEmail(userEmail);
+        Optional<User> user = userRepository.findFirstByEmail(userEmail);
+        if (user.isPresent()) {
+            return new ProfileView(user.get());
+        }
+        return null;
     }
 
     @PostMapping(path = "/public/signin")
