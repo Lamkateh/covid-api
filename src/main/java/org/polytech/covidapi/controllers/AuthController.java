@@ -1,7 +1,6 @@
 package org.polytech.covidapi.controllers;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,22 +11,17 @@ import org.polytech.covidapi.entities.User;
 import org.polytech.covidapi.security.MessageResponse;
 import org.polytech.covidapi.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.micrometer.core.ipc.http.HttpSender.Response;
 
 @RestController
 public class AuthController {
@@ -35,8 +29,6 @@ public class AuthController {
     @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserServices userService;
     @Autowired
     AuthenticationManager authenticationManager;
 

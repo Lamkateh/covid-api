@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.polytech.covidapi.dao.CenterRepository;
-import org.polytech.covidapi.dao.UserRepository;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class DoctorsController {
 
     @Autowired
-    private final UserRepository userRepository;
-
-    @Autowired
     private final CenterRepository centerRepository;
 
-    public DoctorsController(UserRepository userRepository, CenterRepository centerRepository) {
-        this.userRepository = userRepository;
+    public DoctorsController(CenterRepository centerRepository) {
         this.centerRepository = centerRepository;
     }
 

@@ -1,7 +1,6 @@
 package org.polytech.covidapi.entities;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -25,7 +24,7 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     private String password;
     private String phone;
