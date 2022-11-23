@@ -68,6 +68,7 @@ public class Appointment {
         return this.isDone;
     }
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     public Center getCenter() {
         return this.center;
     }

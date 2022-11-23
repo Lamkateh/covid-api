@@ -1,15 +1,9 @@
 package org.polytech.covidapi.controllers;
 
-import liquibase.repackaged.org.apache.commons.text.WordUtils;
-
-import java.util.Arrays;
-
 import org.polytech.covidapi.dao.CenterRepository;
-import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.polytech.covidapi.services.Base64Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -47,7 +41,7 @@ public class CenterController {
 
     @GetMapping(path = "/public/centers/{id}")
     public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) {
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findFirstById(id));
+        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, centerRepository.findFirstById(id));
     }
 
     /*
