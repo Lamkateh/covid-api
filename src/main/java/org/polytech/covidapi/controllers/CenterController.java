@@ -1,12 +1,19 @@
 package org.polytech.covidapi.controllers;
 
 import liquibase.repackaged.org.apache.commons.text.WordUtils;
+
+import java.util.Arrays;
+
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.entities.Center;
+import org.polytech.covidapi.response.ResponseHandler;
+import org.polytech.covidapi.services.Base64Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,32 +24,30 @@ public class CenterController {
     @Autowired
     private final CenterRepository centerRepository;
 
-    CenterController(CenterRepository centerRepository) {
+    public CenterController(CenterRepository centerRepository) {
         this.centerRepository = centerRepository;
     }
 
     @GetMapping(path = "/public/centers/city/{city}")
-    Page<Center> findAllCentersByCity(@PathVariable String city, @PageableDefault(size = 15) Pageable p) { // TO DO :
-                                                                                                           // like
-        city = WordUtils.capitalizeFully(city);
-        return centerRepository.findAllCentersByCity(city, p);
+    public ResponseEntity<Object> findAllCentersByCity(@PathVariable String city, @PageableDefault(size = 15) Pageable p) { 
+        city = Base64Service.decode(city);
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findAllCentersByCityContainingIgnoreCase(city, p));
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
-    Page<Center> findAllCentersByName(@PathVariable String name, @PageableDefault(size = 15) Pageable p) { // TO DO :
-                                                                                                           // like
-        name = WordUtils.capitalizeFully(name);
-        return centerRepository.findAllCentersByName(name, p);
+    public ResponseEntity<Object> findAllCentersByName(@PathVariable String name, @PageableDefault(size = 15) Pageable p) {
+        name = Base64Service.decode(name);
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findAllCentersByNameContainingIgnoreCase(name, p));
     }
 
     @GetMapping(path = "/public/centers")
-    Page<Center> findAllCenters(@PageableDefault(size = 15) Pageable p) { // TO DO : like
-        return centerRepository.findAllByOrderByCityAsc(p);
+    public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 15) Pageable p) {
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findAllByOrderByCityAsc(p));
     }
 
-    @GetMapping(path = "/public/center/{id}")
-    Center findCenterById(@PathVariable("id") int id) {
-        return centerRepository.findFirstById(id);
+    @GetMapping(path = "/public/centers/{id}")
+    public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) {
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findFirstById(id));
     }
 
     /*
