@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.polytech.covidapi.dao.UserRepository;
-import org.polytech.covidapi.entities.ERole;
+import org.polytech.covidapi.entities.Role;
 import org.polytech.covidapi.entities.User;
 import org.polytech.covidapi.exception.ResourceNotFoundException;
 import org.polytech.covidapi.response.ResponseHandler;
@@ -26,11 +26,12 @@ public class UserRoleController {
     }
 
     @PostMapping(path = "/private/users/{id}/role")
-    public ResponseEntity<Object> updateRole(@PathVariable("id") int id, @RequestBody ERole role) throws ResourceNotFoundException {
+    public ResponseEntity<Object> updateRole(@PathVariable("id") int id, @RequestBody Role role) throws ResourceNotFoundException {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         List<String> roles = new ArrayList<String>();
-        roles.add(role.toString());
+        roles.add(role.getName().toUpperCase());
         user.setRoles(roles);
-        return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, userRepository.findFirstById(id));
+        userRepository.save(user);
+        return ResponseHandler.generateResponse("Role successfully updated", HttpStatus.OK, user);
     }
 }
