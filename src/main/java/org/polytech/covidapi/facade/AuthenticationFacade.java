@@ -1,7 +1,5 @@
 package org.polytech.covidapi.facade;
 
-import java.util.stream.Collectors;
-
 import org.polytech.covidapi.entities.ERole;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
