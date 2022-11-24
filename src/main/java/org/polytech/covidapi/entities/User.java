@@ -33,6 +33,8 @@ public class User {
     private String phone;
     @Column(name = "birth_date")
     private LocalDate birthDate;
+    @Column(columnDefinition = "boolean default false")
+    private boolean disabled;
 
     @ElementCollection
     private List<String> roles;
@@ -92,6 +94,10 @@ public class User {
         return this.center;
     }
 
+    public boolean getDisabled() {
+        return this.disabled;
+    }
+
     // Setters
 
     public void setId(Integer id) {
@@ -136,6 +142,10 @@ public class User {
 
     public void setCenter(Center center) {
         this.center = center;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
 }

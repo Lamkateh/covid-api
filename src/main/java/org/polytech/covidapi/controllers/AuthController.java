@@ -60,6 +60,10 @@ public class AuthController {
         }
 
         User user = userRepository.findFirstByEmail(email).get();
+        if (user.getDisabled()) {
+            return ResponseHandler.generateResponse("User is disabled", HttpStatus.BAD_REQUEST, null);
+        }
+
         return ResponseHandler.generateResponse("User successfully logged in", HttpStatus.OK,
                 new ProfileView(user));
     }
@@ -82,54 +86,6 @@ public class AuthController {
         user.setBirthDate(birthDate);
         user.setPhone(phone);
         List<String> roles = Arrays.asList("USER");
-        user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-
-        return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
-    }
-
-    @PostMapping(path = "/private/superAdmin/signup/admin")
-    public ResponseEntity<?> signupAdmin(@RequestParam("first_name") String first_name,
-            @RequestParam("last_name") String last_name,
-            @RequestParam("email") String email, @RequestParam("password") String password,
-            @RequestParam(value = "phone", required = false) String phone,
-            @RequestParam(value = "birth_date", required = false) LocalDate birthDate) {
-        Optional<User> userSearch = userRepository.findFirstByEmail(email);
-        if (userSearch.isPresent()) {
-            return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
-        }
-        User user = new User();
-        user.setFirstName(first_name);
-        user.setLastName(last_name);
-        user.setEmail(email);
-        user.setBirthDate(birthDate);
-        user.setPhone(phone);
-        List<String> roles = Arrays.asList("ADMIN");
-        user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-
-        return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
-    }
-
-    @PostMapping(path = "/private/admin/signup/doctors")
-    public ResponseEntity<?> signupDoctors(@RequestParam("first_name") String first_name,
-            @RequestParam("last_name") String last_name,
-            @RequestParam("email") String email, @RequestParam("password") String password,
-            @RequestParam(value = "phone", required = false) String phone,
-            @RequestParam(value = "birth_date", required = false) LocalDate birthDate) {
-        Optional<User> userSearch = userRepository.findFirstByEmail(email);
-        if (userSearch.isPresent()) {
-            return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
-        }
-        User user = new User();
-        user.setFirstName(first_name);
-        user.setLastName(last_name);
-        user.setEmail(email);
-        user.setBirthDate(birthDate);
-        user.setPhone(phone);
-        List<String> roles = Arrays.asList("DOCTORS");
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
