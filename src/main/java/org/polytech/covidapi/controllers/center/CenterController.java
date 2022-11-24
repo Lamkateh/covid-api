@@ -54,7 +54,21 @@ public class CenterController {
     @PostMapping(path = "/private/centers")
     public ResponseEntity<Object> store(@RequestBody Center center) {
         //TODO : check user permissions
-        //TODO : validation RequestBody
+
+        // TODO : better validation
+        if (center.getName() == null || center.getName().isEmpty()) {
+            return ResponseHandler.generateResponse("Name is required", HttpStatus.BAD_REQUEST, null);
+        }
+        if (center.getAddress() == null || center.getAddress().isEmpty()) {
+            return ResponseHandler.generateResponse("Address is required", HttpStatus.BAD_REQUEST, null);
+        }
+        if (center.getCity() == null || center.getCity().isEmpty()) {
+            return ResponseHandler.generateResponse("City is required", HttpStatus.BAD_REQUEST, null);
+        }
+        if (center.getZipCode() == null || center.getZipCode().isEmpty()) {
+            return ResponseHandler.generateResponse("ZipCode is required", HttpStatus.BAD_REQUEST, null);
+        }
+
         center = centerRepository.save(center);
         return ResponseHandler.generateResponse("Center successfully stored", HttpStatus.OK, center);
     }
@@ -62,8 +76,21 @@ public class CenterController {
     @PutMapping(path = "/private/centers/{id}")
     public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center centerDetails) throws ResourceNotFoundException {
         //TODO : check user permissions
-        //TODO : validation RequestBody
         Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+
+        // TODO : better validation
+        if (centerDetails.getName() == null || centerDetails.getName().isEmpty()) {
+            return ResponseHandler.generateResponse("Name is required", HttpStatus.BAD_REQUEST, null);
+        }
+        if (centerDetails.getAddress() == null || centerDetails.getAddress().isEmpty()) {
+            return ResponseHandler.generateResponse("Address is required", HttpStatus.BAD_REQUEST, null);
+        }
+        if (centerDetails.getCity() == null || centerDetails.getCity().isEmpty()) {
+            return ResponseHandler.generateResponse("City is required", HttpStatus.BAD_REQUEST, null);
+        }
+        if (centerDetails.getZipCode() == null || centerDetails.getZipCode().isEmpty()) {
+            return ResponseHandler.generateResponse("ZipCode is required", HttpStatus.BAD_REQUEST, null);
+        }
 
         center.setName(centerDetails.getName());
         center.setCity(centerDetails.getCity());
