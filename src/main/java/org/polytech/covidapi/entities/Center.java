@@ -129,4 +129,12 @@ public class Center {
         this.doctors = doctors;
     }
 
+    public void addDoctor(User doctor) {
+        this.doctors.add(doctor);
+    }
+
+    public void removeDoctor(User doctor) {
+        this.doctors.remove(doctor);
+    }
+
 }

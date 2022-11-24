@@ -1,7 +1,8 @@
-package org.polytech.covidapi.controllers;
+package org.polytech.covidapi.controllers.center;
 
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.entities.Center;
+import org.polytech.covidapi.exception.ResourceNotFoundException;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.polytech.covidapi.services.Base64Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +46,9 @@ public class CenterController {
     }
 
     @GetMapping(path = "/public/centers/{id}")
-    public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) {
-        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, centerRepository.findFirstById(id));
+    public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) throws ResourceNotFoundException {
+        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, center);
     }
 
     @PostMapping(path = "/private/centers")
@@ -57,24 +60,25 @@ public class CenterController {
     }
 
     @PutMapping(path = "/private/centers/{id}")
-    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center center) {
+    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center centerDetails) throws ResourceNotFoundException {
         //TODO : check user permissions
         //TODO : validation RequestBody
-        center = centerRepository.save(center);
-        return ResponseHandler.generateResponse("Center successfully updated", HttpStatus.OK, center);
+        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+
+        center.setName(centerDetails.getName());
+        center.setCity(centerDetails.getCity());
+        center.setAddress(centerDetails.getAddress());
+        center.setPhone(centerDetails.getPhone());
+        center.setZipCode(centerDetails.getZipCode());
+        center.setEmail(centerDetails.getEmail());
+        Center updatedCenter = centerRepository.save(center);
+        return ResponseHandler.generateResponse("Center successfully updated", HttpStatus.OK, updatedCenter);
     }
 
-    /*
-     * @PostMapping("/admin/center")
-     * Center store(@RequestBody Center center){
-     * // Récupère données user connectée A VOIR AVEC COURS JWT
-     * // checker rôle
-     * Center centerSaved = new Center(center.getName(), center.getCity(),
-     * center.getZipCode(), center.getAddress(), center.getPhone(),
-     * center.getEmail());
-     * centerRepository.save(centerSaved);
-     * return centerRepository.findFirstById(centerSaved.getId());
-     * }
-     */
-
+    @DeleteMapping(path = "/private/centers/{id}")
+    public ResponseEntity<Object> delete(@PathVariable int id) {
+        //TODO : check user permissions
+        centerRepository.deleteById(id);
+        return ResponseHandler.generateResponse("Center successfully deleted", HttpStatus.OK, null);
+    }
 }
