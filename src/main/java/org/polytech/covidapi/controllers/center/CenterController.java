@@ -59,15 +59,6 @@ public class CenterController {
         if (center.getName() == null || center.getName().isEmpty()) {
             return ResponseHandler.generateResponse("Name is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (center.getAddress() == null || center.getAddress().isEmpty()) {
-            return ResponseHandler.generateResponse("Address is required", HttpStatus.BAD_REQUEST, null);
-        }
-        if (center.getCity() == null || center.getCity().isEmpty()) {
-            return ResponseHandler.generateResponse("City is required", HttpStatus.BAD_REQUEST, null);
-        }
-        if (center.getZipCode() == null || center.getZipCode().isEmpty()) {
-            return ResponseHandler.generateResponse("ZipCode is required", HttpStatus.BAD_REQUEST, null);
-        }
 
         center = centerRepository.save(center);
         return ResponseHandler.generateResponse("Center successfully stored", HttpStatus.OK, center);
