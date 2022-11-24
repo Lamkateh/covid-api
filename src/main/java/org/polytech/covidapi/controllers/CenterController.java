@@ -1,6 +1,7 @@
 package org.polytech.covidapi.controllers;
 
 import org.polytech.covidapi.dao.CenterRepository;
+import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.polytech.covidapi.services.Base64Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,6 +46,22 @@ public class CenterController {
     @GetMapping(path = "/public/centers/{id}")
     public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) {
         return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, centerRepository.findFirstById(id));
+    }
+
+    @PostMapping(path = "/private/centers")
+    public ResponseEntity<Object> store(@RequestBody Center center) {
+        //TODO : check user permissions
+        //TODO : validation RequestBody
+        center = centerRepository.save(center);
+        return ResponseHandler.generateResponse("Center successfully stored", HttpStatus.OK, center);
+    }
+
+    @PutMapping(path = "/private/centers/{id}")
+    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center center) {
+        //TODO : check user permissions
+        //TODO : validation RequestBody
+        center = centerRepository.save(center);
+        return ResponseHandler.generateResponse("Center successfully updated", HttpStatus.OK, center);
     }
 
     /*
