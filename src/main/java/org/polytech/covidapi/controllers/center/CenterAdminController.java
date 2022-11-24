@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class CenterDoctorController {
+public class CenterAdminController {
     @Autowired
     private final CenterRepository centerRepository;
 
@@ -32,12 +32,15 @@ public class CenterDoctorController {
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
-    public CenterDoctorController(CenterRepository centerRepository, UserRepository userRepository) {
+    public CenterAdminController(CenterRepository centerRepository, UserRepository userRepository) {
         this.centerRepository = centerRepository;
         this.userRepository = userRepository;
     }
 
-    @GetMapping(path = "/private/centers/{id}/doctors")
+    // TODO : faire le même principe que pour les docteurs
+    // donc un admin de centre
+
+    @GetMapping(path = "/private/centers/{id}/admins")
     public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id) throws ResourceNotFoundException {
         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
@@ -47,7 +50,7 @@ public class CenterDoctorController {
         return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, center.getDoctors());
     }
 
-    @PostMapping(path = "/private/centers/{id}/doctors")
+    @PostMapping(path = "/private/centers/{id}/admins")
     public ResponseEntity<Object> addDoctorToCenter(@PathVariable("id") int id, @RequestBody User doctorDetails) throws ResourceNotFoundException {
         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
@@ -64,7 +67,7 @@ public class CenterDoctorController {
         return ResponseHandler.generateResponse("Doctor successfully added to center", HttpStatus.OK, center);
     }
 
-    @DeleteMapping(path = "/private/centers/{id}/doctors/{doctorId}")
+    @DeleteMapping(path = "/private/centers/{id}/admins/{doctorId}")
     public ResponseEntity<Object> removeDoctorFromCenter(@PathVariable("id") int id, @PathVariable("doctorId") int doctorId) throws ResourceNotFoundException {
         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
