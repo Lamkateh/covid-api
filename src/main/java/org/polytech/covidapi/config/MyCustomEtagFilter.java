@@ -18,7 +18,7 @@ public class MyCustomEtagFilter extends ShallowEtagHeaderFilter {
 
     private static final String DIRECTIVE_NO_STORE = "no-store";
     private static Set<String> cache = new HashSet<>();
-    private static String requestToFilter = "/public";
+    private static String requestToFilter = "/private";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
