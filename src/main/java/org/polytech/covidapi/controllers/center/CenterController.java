@@ -1,5 +1,7 @@
 package org.polytech.covidapi.controllers.center;
 
+import java.time.Duration;
+
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.ERole;
@@ -19,9 +21,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import io.github.bucket4j.*;
 
 @RestController
 public class CenterController {
+
+    // rajoute 10 tokens toutes les minutes
+    Refill refill = Refill.intervally(10, Duration.ofMinutes(1));
+    // capacité max de 10 token
+    Bandwidth limit = Bandwidth.classic(10, refill);
+    Bucket bucket = Bucket.builder().addLimit(limit).build();
 
     @Autowired
     private final CenterRepository centerRepository;
@@ -34,32 +43,49 @@ public class CenterController {
     }
 
     @GetMapping(path = "/public/centers/city/{city}")
-    public ResponseEntity<Object> findAllCentersByCity(@PathVariable String city, @PageableDefault(size = 15) Pageable p) { 
+    public ResponseEntity<Object> findAllCentersByCity(@PathVariable String city,
+            @PageableDefault(size = 15) Pageable p) {
         city = Base64Service.decode(city);
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findAllCentersByCityContainingIgnoreCase(city, p));
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                centerRepository.findAllCentersByCityContainingIgnoreCase(city, p));
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
-    public ResponseEntity<Object> findAllCentersByName(@PathVariable String name, @PageableDefault(size = 15) Pageable p) {
+    public ResponseEntity<Object> findAllCentersByName(@PathVariable String name,
+            @PageableDefault(size = 15) Pageable p) {
         name = Base64Service.decode(name);
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findAllCentersByNameContainingIgnoreCase(name, p));
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                centerRepository.findAllCentersByNameContainingIgnoreCase(name, p));
     }
 
     @GetMapping(path = "/public/centers")
     public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 15) Pageable p) {
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK, centerRepository.findAllByOrderByCityAsc(p));
+
+        ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
+
+        if (probe.isConsumed()) {
+            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                    centerRepository.findAllByOrderByCityAsc(p));
+        }
+
+        long delaiEnSeconde = probe.getNanosToWaitForRefill() / 1_000_000_000;
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header("X-Rate-Limit-Retry-After-Seconds", String.valueOf(delaiEnSeconde))
+                .build();
     }
 
     @GetMapping(path = "/public/centers/{id}")
     public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) throws ResourceNotFoundException {
-        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
         return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, center);
     }
 
     @PostMapping(path = "/private/centers")
     public ResponseEntity<Object> store(@RequestBody Center center) {
         if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
         }
 
         // TODO : better validation
@@ -72,12 +98,15 @@ public class CenterController {
     }
 
     @PutMapping(path = "/private/centers/{id}")
-    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center centerDetails) throws ResourceNotFoundException {
+    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center centerDetails)
+            throws ResourceNotFoundException {
         if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) || !authenticationFacade.hasRole(ERole.ADMIN)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
         }
 
-        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
 
         // TODO : better validation
         if (centerDetails.getName() == null || centerDetails.getName().isEmpty()) {
@@ -106,7 +135,8 @@ public class CenterController {
     @DeleteMapping(path = "/private/centers/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
         if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
         }
 
         centerRepository.deleteById(id);
