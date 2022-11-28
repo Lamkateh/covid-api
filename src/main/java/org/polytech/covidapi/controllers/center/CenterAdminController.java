@@ -79,7 +79,7 @@ public class CenterAdminController {
         Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
         User doctor = userRepository.findById(doctorId).orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
         List<String> roles = new ArrayList<String>();
-        roles.add("MEMBER");
+        roles.add("USER");
         doctor.setRoles(roles);
         userRepository.save(doctor);
         center.removeDoctor(doctor);

@@ -82,7 +82,7 @@ public class AuthController {
         User user = new User();
         user.setFirstName(first_name);
         user.setLastName(last_name);
-        user.setEmail(email);
+        user.setEmail(email); 
         user.setBirthDate(birthDate);
         user.setPhone(phone);
         List<String> roles = Arrays.asList("USER");
