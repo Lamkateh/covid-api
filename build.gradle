@@ -27,6 +27,11 @@ dependencies {
 
 jar{
     archiveName 'covid-api.jar'
+	manifest {
+		attributes (
+			'Main-Class': 'org.polytech.covidapi.CovidApiApplication'
+		)
+	}
 }
 
 tasks.named('test') {
