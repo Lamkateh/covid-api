@@ -13,9 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 
 @Entity
 @Table(name = "centers")
@@ -43,9 +41,9 @@ public class Center {
 
     }
 
-    public Center (int id, String name, String address, String city, String zipCode, String phone, String email) {
+    public Center(int id, String name, String address, String city, String zipCode, String phone, String email) {
         this.id = id;
-        this.name = name; 
+        this.name = name;
         this.address = address;
         this.city = city;
         this.zipCode = zipCode;
@@ -53,7 +51,7 @@ public class Center {
         this.email = email;
     }
 
-    //Getters with trim
+    // Getters with trim
     public Integer getId() {
         return this.id;
     }
@@ -92,7 +90,7 @@ public class Center {
         return this.doctors;
     }
 
-    //Setters
+    // Setters
     public void setId(Integer id) {
         this.id = id;
     }

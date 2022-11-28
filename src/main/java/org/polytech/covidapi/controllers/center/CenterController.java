@@ -3,6 +3,7 @@ package org.polytech.covidapi.controllers.center;
 import java.time.Duration;
 
 import org.polytech.covidapi.dao.CenterRepository;
+import org.polytech.covidapi.dto.center.CenterPreviewView;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.ERole;
 import org.polytech.covidapi.exception.ResourceNotFoundException;
@@ -10,6 +11,8 @@ import org.polytech.covidapi.facade.IAuthenticationFacade;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.polytech.covidapi.services.Base64Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -61,12 +64,13 @@ public class CenterController {
     @GetMapping(path = "/public/centers")
     public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 15) Pageable p) {
 
-        
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
         if (probe.isConsumed()) {
+            Page<Center> page = centerRepository.findAllByOrderByCityAsc(p);
             return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                    centerRepository.findAllByOrderByCityAsc(p));
+                    new PageImpl<CenterPreviewView>(
+                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
         }
 
         long delaiEnSeconde = probe.getNanosToWaitForRefill() / 1_000_000_000;

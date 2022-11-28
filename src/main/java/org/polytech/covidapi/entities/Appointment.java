@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-
 @Entity
 @Table(name = "appointments")
 public class Appointment {
@@ -35,14 +34,14 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User doctor;
 
-
-    public Appointment(){
+    public Appointment() {
 
     }
+
     public Appointment(LocalDate date, LocalTime time) {
-        this.date =date; 
+        this.date = date;
         this.time = time;
-        //this.center = center;
+        // this.center = center;
     }
 
     public Appointment(LocalDate date, LocalTime time, boolean isDone, Center center, User patient, User doctor) {
@@ -80,6 +79,7 @@ public class Appointment {
         return this.patient;
     }
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     public User getDoctor() {
         return this.doctor;
     }

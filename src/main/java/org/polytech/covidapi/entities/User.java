@@ -85,6 +85,7 @@ public class User {
         return this.appointmentsAsPatient;
     }
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     public List<Appointment> getAppointmentsAsDoctor() {
         return this.appointmentsAsDoctor;
     }

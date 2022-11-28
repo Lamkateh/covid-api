@@ -35,7 +35,7 @@ public class AppointmentController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping(path = "/public/center/{id}/appointments")
+    @GetMapping(path = "/public/centers/{id}/appointments")
     public ResponseEntity<Object> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) {
         // TO DO : like
 
@@ -47,6 +47,8 @@ public class AppointmentController {
         LocalTime closeTime = LocalTime.of(18, 0);
         Center center = centerRepository.findFirstById(center_id);
 
+        int doctorCount = center.getDoctors().size();
+
         for (int day = 0; day < 7; day++) {
 
             List<AppointmentPreviewView> appointmentsAvailable = new ArrayList<AppointmentPreviewView>();
@@ -54,30 +56,33 @@ public class AppointmentController {
             List<Appointment> appointmentsUnavailable = appointmentRepository.findAppointmentsByCenterAndDate(center,
                     newDate);
             List<LocalTime> timeUnavailable = new ArrayList<LocalTime>();
-            for (Appointment a : appointmentsUnavailable) {
-                timeUnavailable.add(a.getTime());
-            }
-
-            if (day == 0) {
-                int unroundedMinutes = time.getMinute();
-                int mod = unroundedMinutes % 15;
-                LocalTime timeRounded = time.plusMinutes((15 - mod));
-                while (timeRounded.isBefore(closeTime)) {
-                    if (!timeUnavailable.contains(timeRounded)) {
-                        AppointmentPreviewView appointment = new AppointmentPreviewView(timeRounded, center.getId());
-                        appointmentsAvailable.add(appointment);
-                    }
-                    timeRounded = timeRounded.plusMinutes(15);
+            if (doctorCount > 0) {
+                for (Appointment a : appointmentsUnavailable) {
+                    timeUnavailable.add(a.getTime());
                 }
-            } else {
-                LocalTime baseTime = LocalTime.of(8, 0); // 8h
-                while (baseTime.isBefore(closeTime)) // Jusqu'a 18h
-                {
-                    if (!timeUnavailable.contains(baseTime)) {
-                        AppointmentPreviewView appointment = new AppointmentPreviewView(baseTime, center.getId());
-                        appointmentsAvailable.add(appointment);
+
+                if (day == 0) {
+                    int unroundedMinutes = time.getMinute();
+                    int mod = unroundedMinutes % 15;
+                    LocalTime timeRounded = time.plusMinutes((15 - mod));
+                    while (timeRounded.isBefore(closeTime)) {
+                        if (!timeUnavailable.contains(timeRounded)) {
+                            AppointmentPreviewView appointment = new AppointmentPreviewView(timeRounded,
+                                    center.getId());
+                            appointmentsAvailable.add(appointment);
+                        }
+                        timeRounded = timeRounded.plusMinutes(15);
                     }
-                    baseTime = baseTime.plusMinutes(15);
+                } else {
+                    LocalTime baseTime = LocalTime.of(8, 0); // 8h
+                    while (baseTime.isBefore(closeTime)) // Jusqu'a 18h
+                    {
+                        if (!timeUnavailable.contains(baseTime)) {
+                            AppointmentPreviewView appointment = new AppointmentPreviewView(baseTime, center.getId());
+                            appointmentsAvailable.add(appointment);
+                        }
+                        baseTime = baseTime.plusMinutes(15);
+                    }
                 }
             }
             DayView dayView = new DayView(newDate, appointmentsAvailable);
@@ -87,7 +92,7 @@ public class AppointmentController {
                 new AppointmentsCenterView(days, startTime, closeTime));
     }
 
-    @PostMapping(path = "/private/center/{id}/appointments")
+    @PostMapping(path = "/private/centers/{id}/appointments")
     public ResponseEntity<Object> registerAppointment(@PathVariable("id") int center_id,
             @RequestParam("patient_id") String patient_id,
             @RequestParam("time") String time,
