@@ -12,7 +12,6 @@ public class CenterPreviewView {
     private String zipCode;
     private String phone;
     private String email;
-
     private boolean availableAppointments;
 
     public CenterPreviewView(Center center) {

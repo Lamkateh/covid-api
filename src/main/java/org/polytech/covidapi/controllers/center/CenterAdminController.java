@@ -21,12 +21,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 public class CenterAdminController {
 
-    
-    
     @Autowired
     private final CenterRepository centerRepository;
 
@@ -45,23 +42,31 @@ public class CenterAdminController {
     // donc un admin de centre
 
     @GetMapping(path = "/private/centers/{id}/admins")
-    public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
+    public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id)
+            throws ResourceNotFoundException {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)
+                && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
         }
 
-        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, center.getDoctors());
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+        return ResponseHandler.generateResponse("Admins successfully retrieved", HttpStatus.OK, center.getAdmins());
     }
 
     @PostMapping(path = "/private/centers/{id}/admins")
-    public ResponseEntity<Object> addDoctorToCenter(@PathVariable("id") int id, @RequestBody User doctorDetails) throws ResourceNotFoundException {
+    public ResponseEntity<Object> addDoctorToCenter(@PathVariable("id") int id, @RequestBody User doctorDetails)
+            throws ResourceNotFoundException {
         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
         }
 
-        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        User doctor = userRepository.findById(doctorDetails.getId()).orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+        User doctor = userRepository.findById(doctorDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
         List<String> roles = new ArrayList<String>();
         roles.add("DOCTOR");
         doctor.setRoles(roles);
@@ -72,12 +77,16 @@ public class CenterAdminController {
     }
 
     @DeleteMapping(path = "/private/centers/{id}/admins/{doctorId}")
-    public ResponseEntity<Object> removeDoctorFromCenter(@PathVariable("id") int id, @PathVariable("doctorId") int doctorId) throws ResourceNotFoundException {
+    public ResponseEntity<Object> removeDoctorFromCenter(@PathVariable("id") int id,
+            @PathVariable("doctorId") int doctorId) throws ResourceNotFoundException {
         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN, null);
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
         }
-        Center center = centerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        User doctor = userRepository.findById(doctorId).orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+        User doctor = userRepository.findById(doctorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
         List<String> roles = new ArrayList<String>();
         roles.add("USER");
         doctor.setRoles(roles);

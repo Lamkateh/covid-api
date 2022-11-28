@@ -11,4 +11,4 @@ RUN mkdir /app
 
 COPY --from=build /home/gradle/src/build/libs/covid-api.jar /app/covid-api.jar
 
-ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/covid-api.jar"]
+ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-Dspring.profiles.active=${ENV} -Djava.security.egd=file:/dev/./urandom","-jar","/app/covid-api.jar"]
