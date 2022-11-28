@@ -5,9 +5,8 @@ import java.util.List;
 
 import org.polytech.covidapi.entities.User;
 
-
 public class SignupUserView {
-    
+
     private String firstName;
     private String lastName;
     private String email;
@@ -20,7 +19,8 @@ public class SignupUserView {
     public SignupUserView() {
     }
 
-    public SignupUserView(User user) {
+    //TODO : transform into entry DTO 
+    public SignupUserView(User user) { 
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
@@ -34,7 +34,6 @@ public class SignupUserView {
         this.birthDate = user.getBirthDate();
         this.phone = user.getPhone();
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -67,6 +66,5 @@ public class SignupUserView {
     public String getPassword() {
         return password;
     }
-
 
 }
