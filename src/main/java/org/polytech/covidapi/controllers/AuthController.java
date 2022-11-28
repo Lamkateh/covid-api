@@ -1,6 +1,5 @@
 package org.polytech.covidapi.controllers;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +79,7 @@ public class AuthController {
         User user = new User();
         user.setFirstName(userSignup.getFirstName());
         user.setLastName(userSignup.getLastName());
-        user.setEmail(userSignup.getEmail()); 
+        user.setEmail(userSignup.getEmail());
         user.setBirthDate(userSignup.getBirthDate());
         user.setPhone(userSignup.getPhone());
         List<String> roles = Arrays.asList("USER");
