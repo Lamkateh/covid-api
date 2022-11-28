@@ -7,11 +7,13 @@ import org.polytech.covidapi.entities.Center;
 public class CenterPreviewView {
     private int id;
     private String name;
-    public String address;
-    public String city;
-    public String zipCode;
-    public String phone;
-    public String email;
+    private String address;
+    private String city;
+    private String zipCode;
+    private String phone;
+    private String email;
+
+    private boolean availableAppointments;
 
     public CenterPreviewView(Center center) {
         this.id = center.getId();
@@ -21,6 +23,7 @@ public class CenterPreviewView {
         this.zipCode = center.getZipCode();
         this.phone = center.getPhone();
         this.email = center.getEmail();
+        this.availableAppointments = center.getDoctors().size() > 0;
     }
 
     public int getId() {
@@ -49,6 +52,10 @@ public class CenterPreviewView {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean getAvailableAppointments() {
+        return availableAppointments;
     }
 
     public static List<CenterPreviewView> convert(List<Center> center) {

@@ -1,6 +1,7 @@
 package org.polytech.covidapi.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -130,6 +131,12 @@ public class User {
     }
 
     public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setRole(String role) {
+        List<String> roles = new ArrayList<>();
+        roles.add(role);
         this.roles = roles;
     }
 

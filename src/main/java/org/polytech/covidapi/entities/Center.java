@@ -35,7 +35,7 @@ public class Center {
     private List<Appointment> appointments;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "center", fetch = FetchType.LAZY)
-    private List<User> doctors;
+    private List<User> staff;
 
     public Center() {
 
@@ -87,7 +87,12 @@ public class Center {
 
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     public List<User> getDoctors() {
-        return this.doctors;
+        return this.staff.stream().filter(user -> user.getRoles().contains("DOCTOR")).toList();
+    }
+
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    public List<User> getAdmins() {
+        return this.staff.stream().filter(user -> user.getRoles().contains("ADMIN")).toList();
     }
 
     // Setters
@@ -123,16 +128,23 @@ public class Center {
         this.appointments = appointments;
     }
 
-    public void setDoctors(List<User> doctors) {
-        this.doctors = doctors;
-    }
-
     public void addDoctor(User doctor) {
-        this.doctors.add(doctor);
+        doctor.setRole("DOCTOR");
+        this.staff.add(doctor);
     }
 
     public void removeDoctor(User doctor) {
-        this.doctors.remove(doctor);
+        doctor.setRole("USER");
+        this.staff.remove(doctor);
     }
 
+    public void addAdmin(User admin) {
+        admin.setRole("ADMIN");
+        this.staff.add(admin);
+    }
+
+    public void removeAdmin(User admin) {
+        admin.setRole("USER");
+        this.staff.remove(admin);
+    }
 }
