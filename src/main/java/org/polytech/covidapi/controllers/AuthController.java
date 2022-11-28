@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.polytech.covidapi.dao.UserRepository;
 import org.polytech.covidapi.dto.ProfileView;
+import org.polytech.covidapi.dto.SignupUserView;
 import org.polytech.covidapi.entities.User;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,25 +71,21 @@ public class AuthController {
     }
 
     @PostMapping(path = "/public/signup")
-    public ResponseEntity<Object> signup(@RequestParam("first_name") String first_name,
-            @RequestParam("last_name") String last_name,
-            @RequestParam("email") String email, @RequestParam("password") String password,
-            @RequestParam(value = "phone", required = false) String phone,
-            @RequestParam(value = "birth_date", required = false) LocalDate birthDate) {
+    public ResponseEntity<Object> signup(@RequestBody SignupUserView userSignup) {
 
-        Optional<User> userSearch = userRepository.findFirstByEmail(email);
+        Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
         if (userSearch.isPresent()) {
             return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
         }
         User user = new User();
-        user.setFirstName(first_name);
-        user.setLastName(last_name);
-        user.setEmail(email); 
-        user.setBirthDate(birthDate);
-        user.setPhone(phone);
+        user.setFirstName(userSignup.getFirstName());
+        user.setLastName(userSignup.getLastName());
+        user.setEmail(userSignup.getEmail()); 
+        user.setBirthDate(userSignup.getBirthDate());
+        user.setPhone(userSignup.getPhone());
         List<String> roles = Arrays.asList("USER");
         user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
         userRepository.save(user);
 
         return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
