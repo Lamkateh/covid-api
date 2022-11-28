@@ -1,5 +1,8 @@
 package org.polytech.covidapi.controllers.user;
 
+import java.io.Console;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -55,12 +58,17 @@ public class UserController {
         return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, user);
     }
 
-    @PostMapping(path = "/private/users")
+    @PostMapping(path = "/public/users")
     public ResponseEntity<Object> store(@RequestBody SignupUserView userSignup) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
-                    null);
-        }
+        /*
+         * if (!authenticationFacade.hasRole(ERole.ADMIN) &&
+         * !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+         * return ResponseHandler.
+         * generateResponse("You are not allowed to access this resource",
+         * HttpStatus.FORBIDDEN,
+         * null);
+         * }
+         */
 
         Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
         if (userSearch.isPresent()) {
@@ -72,16 +80,25 @@ public class UserController {
         user.setEmail(userSignup.getEmail());
         user.setBirthDate(userSignup.getBirthDate());
         user.setPhone(userSignup.getPhone());
+        System.out.println(userSignup.getCenter_id());
         if (userSignup.getCenter_id() != null) {
+            System.out.println("test");
             Center center = centerRepository.findById(userSignup.getCenter_id())
                     .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-            user.setCenter(center);
+            System.out.println(userSignup.getRoles().get(0));
+            if (userSignup.getRoles().get(0).equals("DOCTOR")) {
+                System.out.println("test");
+                user.setCenter(center);
+                center.addDoctor(user);
+            }
+            centerRepository.save(center);
+
         }
         if (userSignup.getRoles() != null) {
             user.setRoles(userSignup.getRoles());
         } else {
-
-            List<String> roles = Arrays.asList("USER");
+            ArrayList<String> roles = new ArrayList<String>();
+            roles.add("USER");
             user.setRoles(roles);
         }
 
