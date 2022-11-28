@@ -29,7 +29,8 @@ jar{
     archiveName 'covid-api.jar'
 	manifest {
 		attributes (
-			'Main-Class': 'CovidApiApplication'
+			'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
+			'Main-Class': 'org.polytech.covidapi.CovidApiApplication'
 		)
 	}
 }
