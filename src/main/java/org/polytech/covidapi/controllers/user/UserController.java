@@ -58,7 +58,7 @@ public class UserController {
         return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, user);
     }
 
-    @PostMapping(path = "/public/users")
+    @PostMapping(path = "/private/users")
     public ResponseEntity<Object> store(@RequestBody SignupUserView userSignup) throws ResourceNotFoundException {
         /*
          * if (!authenticationFacade.hasRole(ERole.ADMIN) &&
