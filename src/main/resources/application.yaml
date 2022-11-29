@@ -1,18 +1,18 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:covid-db}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:password}
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-  liquibase:
-    enabled: false
-    change-log: "classpath:db/changelog/dbchangelog.xml"
-  management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus,metrics
+    datasource:
+        url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:covid-db}
+        username: ${DATABASE_USERNAME:postgres}
+        password: ${DATABASE_PASSWORD:password}
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+    liquibase:
+        enabled: false
+        change-log: "classpath:db/changelog/dbchangelog.xml"
+    management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,prometheus,metrics
