@@ -3,6 +3,9 @@ package org.polytech.covidapi.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.polytech.covidapi.dto.center.CenterPreviewView;
+import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
 
 public class ProfileView {
@@ -57,11 +60,16 @@ public class ProfileView {
         return center_id;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
     public String getPhone() {
         return phone;
+    }
+
+    public static List<ProfileView> convert(List<User> user) {
+        return user.stream().map(ProfileView::new).toList();
     }
 }
