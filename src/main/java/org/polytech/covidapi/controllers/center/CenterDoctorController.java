@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.dao.UserRepository;
+import org.polytech.covidapi.dto.ProfileView;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.ERole;
 import org.polytech.covidapi.entities.User;
@@ -48,7 +49,7 @@ public class CenterDoctorController {
 
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, center.getDoctors());
+        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, ProfileView.convert(center.getDoctors()));
     }
 
     @PostMapping(path = "/private/centers/{id}/doctors")

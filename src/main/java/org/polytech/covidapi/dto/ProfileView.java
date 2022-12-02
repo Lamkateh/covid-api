@@ -3,17 +3,25 @@ package org.polytech.covidapi.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.polytech.covidapi.dto.center.CenterPreviewView;
+import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class ProfileView {
     private int id;
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private List<String> roles;
-    private Integer center_id;
+    private Center center;
     private LocalDate birthDate;
     private String phone;
+
+    private PasswordEncoder passwordEncoder;
 
     public ProfileView() {
     }
@@ -23,11 +31,12 @@ public class ProfileView {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.password = user.getPassword();
         this.roles = user.getRoles();
         if (user.getCenter() != null) {
-            this.center_id = user.getCenter().getId();
+            this.center = user.getCenter();
         } else {
-            this.center_id = null;
+            this.center = null;
         }
         this.birthDate = user.getBirthDate();
         this.phone = user.getPhone();
@@ -49,19 +58,27 @@ public class ProfileView {
         return email;
     }
 
+    public String getPassword() {
+        return this.password;
+    }
     public List<String> getRoles() {
         return roles;
     }
 
-    public Integer getCenter_id() {
-        return center_id;
+    public Center getCenter() {
+        return center;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
     public String getPhone() {
         return phone;
+    }
+
+    public static List<ProfileView> convert(List<User> user) {
+        return user.stream().map(ProfileView::new).toList();
     }
 }

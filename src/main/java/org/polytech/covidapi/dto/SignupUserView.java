@@ -12,7 +12,7 @@ public class SignupUserView {
     private String email;
     private String password;
     private List<String> roles;
-    private Integer center_id;
+    private Integer centerId;
     private LocalDate birthDate;
     private String phone;
 
@@ -27,9 +27,9 @@ public class SignupUserView {
         this.password = user.getPassword();
         this.roles = user.getRoles();
         if (user.getCenter() != null) {
-            this.center_id = user.getCenter().getId();
+            this.centerId = user.getCenter().getId();
         } else {
-            this.center_id = null;
+            this.centerId = null;
         }
         this.birthDate = user.getBirthDate();
         this.phone = user.getPhone();
@@ -51,8 +51,8 @@ public class SignupUserView {
         return roles;
     }
 
-    public Integer getCenter_id() {
-        return center_id;
+    public Integer getCenterId() {
+        return centerId;
     }
 
     public LocalDate getBirthDate() {
