@@ -15,14 +15,11 @@ public class ProfileView {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private List<String> roles;
     private Center center;
     private LocalDate birthDate;
     private String phone;
-
-    private PasswordEncoder passwordEncoder;
-
+    private boolean disabled;
     public ProfileView() {
     }
 
@@ -31,7 +28,6 @@ public class ProfileView {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.password = user.getPassword();
         this.roles = user.getRoles();
         if (user.getCenter() != null) {
             this.center = user.getCenter();
@@ -40,6 +36,7 @@ public class ProfileView {
         }
         this.birthDate = user.getBirthDate();
         this.phone = user.getPhone();
+        this.disabled = user.getDisabled();
     }
 
     public int getId() {
@@ -58,9 +55,6 @@ public class ProfileView {
         return email;
     }
 
-    public String getPassword() {
-        return this.password;
-    }
     public List<String> getRoles() {
         return roles;
     }
@@ -76,6 +70,10 @@ public class ProfileView {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
     }
 
     public static List<ProfileView> convert(List<User> user) {

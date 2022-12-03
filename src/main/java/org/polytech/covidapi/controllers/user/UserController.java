@@ -20,6 +20,7 @@ import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,15 +75,16 @@ public class UserController {
         user.setEmail(userSignup.getEmail());
         user.setBirthDate(userSignup.getBirthDate());
         user.setPhone(userSignup.getPhone());
+        user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
+        userRepository.save(user);
         if (userSignup.getCenterId() != null) {
             Center center = centerRepository.findById(userSignup.getCenterId())
                     .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-            if (userSignup.getRoles().get(0).equals("DOCTOR")) {
+            if (userSignup.getRoles().get(0).equals("ADMIN") || userSignup.getRoles().get(0).equals("DOCTOR")) {
                 user.setCenter(center);
                 center.addDoctor(user);
             }
             centerRepository.save(center);
-
         }
         if (userSignup.getRoles() != null) {
             user.setRoles(userSignup.getRoles());
@@ -91,12 +93,8 @@ public class UserController {
             roles.add("USER");
             user.setRoles(roles);
         }
-
-        user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
-        userRepository.save(user);
-
         return ResponseHandler.generateResponse("User successfully created", HttpStatus.CREATED,
-                userRepository.save(user));
+                user);
     }
 
     @PutMapping(path = "/private/users/{id}")
@@ -126,29 +124,31 @@ public class UserController {
         if (userDetails.getBirthDate() == null || userDetails.getBirthDate().toString().isEmpty()) {
             return ResponseHandler.generateResponse("Birth date is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (userDetails.getPassword() == null || userDetails.getPassword().isEmpty()) {
-            return ResponseHandler.generateResponse("Password is required", HttpStatus.BAD_REQUEST, null);
-        }
         if (userDetails.getRoles() == null || userDetails.getRoles().isEmpty()) {
             return ResponseHandler.generateResponse("Role is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty()) {
+        if (!userDetails.getRoles().get(0).equals("SUPERADMIN") && (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty())) {
             return ResponseHandler.generateResponse("Center id is required", HttpStatus.BAD_REQUEST, null);
         }
-
-        Center center = centerRepository.findById(userDetails.getCenterId())
-                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
 
         user.setFirstName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
         user.setPhone(userDetails.getPhone());
         user.setBirthDate(userDetails.getBirthDate());
-        user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        if (userDetails.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
         user.setPhone(userDetails.getPhone());
+        user.setDisabled(userDetails.getDisabled());
         user.setRoles(userDetails.getRoles());
-        user.setCenter(center);
-        User updatedUser = userRepository.save(user);
+        if (!userDetails.getRoles().get(0).equals("SUPERADMIN")) {
+            Center center = centerRepository.findById(userDetails.getCenterId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+            user.setCenter(center);
+        }
+
+        ProfileView updatedUser = new ProfileView(userRepository.save(user)); //TODO fonctionne pas
         return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser);
     }
 

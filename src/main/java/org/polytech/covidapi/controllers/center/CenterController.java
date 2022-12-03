@@ -88,7 +88,7 @@ public class CenterController {
 
     @PostMapping(path = "/private/centers")
     public ResponseEntity<Object> store(@RequestBody Center center) {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.ADMIN)) { //TODO remove admin
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -105,7 +105,7 @@ public class CenterController {
     @PutMapping(path = "/private/centers/{id}")
     public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center centerDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) || !authenticationFacade.hasRole(ERole.ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.ADMIN)) { //TODO remove admin?x
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

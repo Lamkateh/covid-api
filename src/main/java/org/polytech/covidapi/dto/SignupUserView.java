@@ -15,7 +15,7 @@ public class SignupUserView {
     private Integer centerId;
     private LocalDate birthDate;
     private String phone;
-
+    private Boolean disabled;
     public SignupUserView() {
     }
 
@@ -33,6 +33,7 @@ public class SignupUserView {
         }
         this.birthDate = user.getBirthDate();
         this.phone = user.getPhone();
+        this.disabled = user.getDisabled();
     }
 
     public String getFirstName() {
@@ -62,6 +63,8 @@ public class SignupUserView {
     public String getPhone() {
         return phone;
     }
+
+    public Boolean getDisabled() { return disabled; }
 
     public String getPassword() {
         return password;
