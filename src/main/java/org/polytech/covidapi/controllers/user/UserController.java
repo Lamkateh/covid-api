@@ -143,8 +143,8 @@ public class UserController {
             user.setCenter(center);
         }
 
-        ProfileView updatedUser = new ProfileView(userRepository.save(user)); //TODO fonctionne pas
-        return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser);
+        Optional<ProfileView> updatedUser = Optional.of(new ProfileView(userRepository.save(user))); //TODO fonctionne mais à vérifier si ça génère pas de bug ailleurs
+        return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser.get());
     }
 
     @DeleteMapping(path = "/private/users/{id}")
