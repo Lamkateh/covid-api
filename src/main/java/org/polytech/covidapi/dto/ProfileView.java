@@ -4,11 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.polytech.covidapi.dto.center.CenterPreviewView;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class ProfileView {
     private int id;

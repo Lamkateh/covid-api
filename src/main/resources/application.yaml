@@ -1,8 +1,8 @@
 spring:
     datasource:
-        url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:covid-db}
-        username: ${DATABASE_USERNAME:postgres}
-        password: ${DATABASE_PASSWORD:password}
+        url: jdbc:postgresql://${DATABASE.HOST:localhost}:${DATABASE.PORT:5432}/${DATABASE.NAME:covid-db}
+        username: ${DATABASE.USERNAME:postgres}
+        password: ${DATABASE.PASSWORD:password}
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         show-sql: true

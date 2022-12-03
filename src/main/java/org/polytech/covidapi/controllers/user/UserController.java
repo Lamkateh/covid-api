@@ -1,10 +1,6 @@
 package org.polytech.covidapi.controllers.user;
 
-import java.io.Console;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.polytech.covidapi.dao.CenterRepository;
@@ -20,7 +16,6 @@ import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
