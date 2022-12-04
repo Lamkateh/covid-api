@@ -51,14 +51,21 @@ public class UserController {
         return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, user);
     }
 
-    @PostMapping(path = "/private/users")
+    @GetMapping(path = "/private/superAdmins")
+    public ResponseEntity<Object> superAdmins() {
+        return ResponseHandler.generateResponse("Super admins successfully retrieved", HttpStatus.OK,
+                userRepository.findByRoles("SUPER_ADMIN"));
+    }
+
+
+    @PostMapping(path = "/public/users")
     public ResponseEntity<Object> store(@RequestBody SignupUserView userSignup) throws ResourceNotFoundException {
-         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+         /*if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
             return ResponseHandler.
             generateResponse("You are not allowed to access this resource",
             HttpStatus.FORBIDDEN,
             null);
-         }
+         }*/
 
         Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
         if (userSearch.isPresent()) {
@@ -75,9 +82,13 @@ public class UserController {
         if (userSignup.getCenterId() != null) {
             Center center = centerRepository.findById(userSignup.getCenterId())
                     .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-            if (userSignup.getRoles().get(0).equals("ADMIN") || userSignup.getRoles().get(0).equals("DOCTOR")) {
+            if (userSignup.getRoles().get(0).equals("DOCTOR")) {
                 user.setCenter(center);
                 center.addDoctor(user);
+            }
+            else if (userSignup.getRoles().get(0).equals("ADMIN")) {
+                user.setCenter(center);
+                center.addAdmin(user);
             }
             centerRepository.save(center);
         }
@@ -88,8 +99,11 @@ public class UserController {
             roles.add("USER");
             user.setRoles(roles);
         }
+
+        userRepository.save(user);
+        ProfileView userProfileView = new ProfileView(user);
         return ResponseHandler.generateResponse("User successfully created", HttpStatus.CREATED,
-                user);
+                userProfileView);
     }
 
     @PutMapping(path = "/private/users/{id}")

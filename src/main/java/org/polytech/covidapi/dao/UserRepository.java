@@ -11,11 +11,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     Boolean existsByFirstNameOrLastName(String firstname, String lastname);
+
     List<User> findByFirstNameOrLastName(String firstname, String lastname);
+
     List<User> findByCenter(Center center);
+
     List<User> findAll();
+
     User findFirstById(int id);
+
     Optional<User> findFirstByEmail(String email);
+
     List<User> findUsersByCenter(Center center);
+
     User findFirstByEmailAndPassword(String email, String password);
+
+    User findByRoles(String Role);
 }
