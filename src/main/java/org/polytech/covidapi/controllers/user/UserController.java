@@ -42,7 +42,7 @@ public class UserController {
     @GetMapping(path = "/private/users")
     public ResponseEntity<Object> index() {
         return ResponseHandler.generateResponse("Users successfully retrieved", HttpStatus.OK,
-                userRepository.findAll());
+                userRepository.findAllByOrderByLastName());
     }
 
     @GetMapping(path = "/private/users/{id}")
@@ -57,15 +57,13 @@ public class UserController {
                 userRepository.findByRoles("SUPER_ADMIN"));
     }
 
-
-    @PostMapping(path = "/public/users")
+    @PostMapping(path = "/private/users")
     public ResponseEntity<Object> store(@RequestBody SignupUserView userSignup) throws ResourceNotFoundException {
-         /*if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.
-            generateResponse("You are not allowed to access this resource",
-            HttpStatus.FORBIDDEN,
-            null);
-         }*/
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource",
+                    HttpStatus.FORBIDDEN,
+                    null);
+        }
 
         Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
         if (userSearch.isPresent()) {
@@ -85,8 +83,7 @@ public class UserController {
             if (userSignup.getRoles().get(0).equals("DOCTOR")) {
                 user.setCenter(center);
                 center.addDoctor(user);
-            }
-            else if (userSignup.getRoles().get(0).equals("ADMIN")) {
+            } else if (userSignup.getRoles().get(0).equals("ADMIN")) {
                 user.setCenter(center);
                 center.addAdmin(user);
             }
@@ -136,7 +133,8 @@ public class UserController {
         if (userDetails.getRoles() == null || userDetails.getRoles().isEmpty()) {
             return ResponseHandler.generateResponse("Role is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (!userDetails.getRoles().get(0).equals("SUPERADMIN") && (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty())) {
+        if (!userDetails.getRoles().get(0).equals("SUPERADMIN")
+                && (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty())) {
             return ResponseHandler.generateResponse("Center id is required", HttpStatus.BAD_REQUEST, null);
         }
 
@@ -157,7 +155,10 @@ public class UserController {
             user.setCenter(center);
         }
 
-        Optional<ProfileView> updatedUser = Optional.of(new ProfileView(userRepository.save(user))); //TODO fonctionne mais à vérifier si ça génère pas de bug ailleurs
+        Optional<ProfileView> updatedUser = Optional.of(new ProfileView(userRepository.save(user))); // TODO fonctionne
+                                                                                                     // mais à vérifier
+                                                                                                     // si ça génère pas
+                                                                                                     // de bug ailleurs
         return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser.get());
     }
 
