@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.polytech.covidapi.dto.center.CenterPreviewView;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
 
@@ -13,7 +14,7 @@ public class ProfileView {
     private String lastName;
     private String email;
     private List<String> roles;
-    private Center center;
+    private CenterPreviewView center;
     private LocalDate birthDate;
     private String phone;
     private boolean disabled;
@@ -27,7 +28,7 @@ public class ProfileView {
         this.email = user.getEmail();
         this.roles = user.getRoles();
         if (user.getCenter() != null) {
-            this.center = user.getCenter();
+            this.center = new CenterPreviewView(user.getCenter());
         } else {
             this.center = null;
         }
@@ -56,7 +57,7 @@ public class ProfileView {
         return roles;
     }
 
-    public Center getCenter() {
+    public CenterPreviewView getCenter() {
         return center;
     }
 
