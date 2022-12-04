@@ -13,6 +13,7 @@ import org.polytech.covidapi.exception.ResourceNotFoundException;
 import org.polytech.covidapi.facade.IAuthenticationFacade;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,7 +50,8 @@ public class CenterDoctorController {
 
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, ProfileView.convert(center.getDoctors()));
+        List<User> doctors = center.getDoctors();
+        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, ProfileView.convert(doctors));
     }
 
     @PostMapping(path = "/private/centers/{id}/doctors")

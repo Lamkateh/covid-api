@@ -41,20 +41,33 @@ public class UserController {
 
     @GetMapping(path = "/private/users")
     public ResponseEntity<Object> index() {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
         return ResponseHandler.generateResponse("Users successfully retrieved", HttpStatus.OK,
-                userRepository.findAllByOrderByLastName());
+                ProfileView.convert(userRepository.findAllByOrderByLastNameAsc()));
     }
 
     @GetMapping(path = "/private/users/{id}")
     public ResponseEntity<Object> show(@PathVariable("id") int id) throws ResourceNotFoundException {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, user);
+        Optional<ProfileView> userProfile = Optional.of(new ProfileView(user));
+        return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, userProfile.get());
     }
 
-    @GetMapping(path = "/private/superAdmins")
-    public ResponseEntity<Object> superAdmins() {
-        return ResponseHandler.generateResponse("Super admins successfully retrieved", HttpStatus.OK,
-                userRepository.findByRoles("SUPER_ADMIN"));
+    @GetMapping(path = "/private/superadmins")
+    public ResponseEntity<Object> superadmins() {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) { //TODO only superadmins
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
+        return ResponseHandler.generateResponse("Superadmins successfully retrieved", HttpStatus.OK,
+                ProfileView.convert(userRepository.findByRolesOrderByLastNameAsc("SUPERADMIN")));
     }
 
     @PostMapping(path = "/private/users")
@@ -64,7 +77,6 @@ public class UserController {
                     HttpStatus.FORBIDDEN,
                     null);
         }
-
         Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
         if (userSearch.isPresent()) {
             return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
@@ -96,11 +108,8 @@ public class UserController {
             roles.add("USER");
             user.setRoles(roles);
         }
-
-        userRepository.save(user);
-        ProfileView userProfileView = new ProfileView(user);
-        return ResponseHandler.generateResponse("User successfully created", HttpStatus.CREATED,
-                userProfileView);
+        Optional<ProfileView> addedUser = Optional.of(new ProfileView(userRepository.save(user)));
+        return ResponseHandler.generateResponse("User successfully created", HttpStatus.CREATED, addedUser.get());
     }
 
     @PutMapping(path = "/private/users/{id}")
@@ -137,7 +146,6 @@ public class UserController {
                 && (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty())) {
             return ResponseHandler.generateResponse("Center id is required", HttpStatus.BAD_REQUEST, null);
         }
-
         user.setFirstName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
@@ -154,11 +162,7 @@ public class UserController {
                     .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
             user.setCenter(center);
         }
-
-        Optional<ProfileView> updatedUser = Optional.of(new ProfileView(userRepository.save(user))); // TODO fonctionne
-                                                                                                     // mais à vérifier
-                                                                                                     // si ça génère pas
-                                                                                                     // de bug ailleurs
+        Optional<ProfileView> updatedUser = Optional.of(new ProfileView(userRepository.save(user)));
         return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser.get());
     }
 
@@ -168,7 +172,6 @@ public class UserController {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
-
         userRepository.deleteById(id);
         return ResponseHandler.generateResponse("User successfully deleted", HttpStatus.OK, null);
     }

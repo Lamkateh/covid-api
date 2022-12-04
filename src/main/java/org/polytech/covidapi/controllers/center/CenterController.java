@@ -124,22 +124,23 @@ public class CenterController {
         if (centerDetails.getName() == null || centerDetails.getName().isEmpty()) {
             return ResponseHandler.generateResponse("Name is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (centerDetails.getAddress() == null || centerDetails.getAddress().isEmpty()) {
-            return ResponseHandler.generateResponse("Address is required", HttpStatus.BAD_REQUEST, null);
-        }
-        if (centerDetails.getCity() == null || centerDetails.getCity().isEmpty()) {
-            return ResponseHandler.generateResponse("City is required", HttpStatus.BAD_REQUEST, null);
-        }
-        if (centerDetails.getZipCode() == null || centerDetails.getZipCode().isEmpty()) {
-            return ResponseHandler.generateResponse("ZipCode is required", HttpStatus.BAD_REQUEST, null);
-        }
 
         center.setName(centerDetails.getName());
-        center.setCity(centerDetails.getCity());
-        center.setAddress(centerDetails.getAddress());
-        center.setPhone(centerDetails.getPhone());
-        center.setZipCode(centerDetails.getZipCode());
-        center.setEmail(centerDetails.getEmail());
+        if (centerDetails.getCity() != null && !centerDetails.getCity().isEmpty()) {
+            center.setCity(centerDetails.getCity());
+        }
+        if (centerDetails.getAddress() != null && !centerDetails.getAddress().isEmpty()) {
+            center.setAddress(centerDetails.getAddress());
+        }
+        if (centerDetails.getPhone() != null && !centerDetails.getPhone().isEmpty()) {
+            center.setPhone(centerDetails.getPhone());
+        }
+        if (centerDetails.getZipCode() != null && !centerDetails.getZipCode().isEmpty()) {
+            center.setZipCode(centerDetails.getZipCode());
+        }
+        if (centerDetails.getEmail() != null && !centerDetails.getEmail().isEmpty()) {
+            center.setEmail(centerDetails.getEmail());
+        }
         Center updatedCenter = centerRepository.save(center);
         return ResponseHandler.generateResponse("Center successfully updated", HttpStatus.OK, updatedCenter);
     }
