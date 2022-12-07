@@ -7,22 +7,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.polytech.covidapi.dto.center.CenterPreviewView;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class ProfileView {
     private int id;
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private List<String> roles;
-    private Center center;
+    private CenterPreviewView center;
     private LocalDate birthDate;
     private String phone;
-
-    private PasswordEncoder passwordEncoder;
-
+    private boolean disabled;
     public ProfileView() {
     }
 
@@ -31,15 +26,15 @@ public class ProfileView {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.password = user.getPassword();
         this.roles = user.getRoles();
         if (user.getCenter() != null) {
-            this.center = user.getCenter();
+            this.center = new CenterPreviewView(user.getCenter());
         } else {
             this.center = null;
         }
         this.birthDate = user.getBirthDate();
         this.phone = user.getPhone();
+        this.disabled = user.getDisabled();
     }
 
     public int getId() {
@@ -58,14 +53,11 @@ public class ProfileView {
         return email;
     }
 
-    public String getPassword() {
-        return this.password;
-    }
     public List<String> getRoles() {
         return roles;
     }
 
-    public Center getCenter() {
+    public CenterPreviewView getCenter() {
         return center;
     }
 
@@ -76,6 +68,10 @@ public class ProfileView {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
     }
 
     public static List<ProfileView> convert(List<User> user) {

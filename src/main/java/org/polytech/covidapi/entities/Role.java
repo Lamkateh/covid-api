@@ -18,6 +18,7 @@ public class Role {
 
     private String name;
 
+    
     @ManyToMany
     private List<User> users;
 

@@ -1,10 +1,6 @@
 package org.polytech.covidapi.controllers.user;
 
-import java.io.Console;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.polytech.covidapi.dao.CenterRepository;
@@ -46,7 +42,7 @@ public class UserController {
     @GetMapping(path = "/private/users")
     public ResponseEntity<Object> index() {
         return ResponseHandler.generateResponse("Users successfully retrieved", HttpStatus.OK,
-                userRepository.findAll());
+                userRepository.findAllByOrderByLastName());
     }
 
     @GetMapping(path = "/private/users/{id}")
@@ -55,14 +51,19 @@ public class UserController {
         return ResponseHandler.generateResponse("User successfully retrieved", HttpStatus.OK, user);
     }
 
+    @GetMapping(path = "/private/superAdmins")
+    public ResponseEntity<Object> superAdmins() {
+        return ResponseHandler.generateResponse("Super admins successfully retrieved", HttpStatus.OK,
+                userRepository.findByRoles("SUPER_ADMIN"));
+    }
+
     @PostMapping(path = "/private/users")
     public ResponseEntity<Object> store(@RequestBody SignupUserView userSignup) throws ResourceNotFoundException {
-         if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
-            return ResponseHandler.
-            generateResponse("You are not allowed to access this resource",
-            HttpStatus.FORBIDDEN,
-            null);
-         }
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource",
+                    HttpStatus.FORBIDDEN,
+                    null);
+        }
 
         Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
         if (userSearch.isPresent()) {
@@ -74,15 +75,19 @@ public class UserController {
         user.setEmail(userSignup.getEmail());
         user.setBirthDate(userSignup.getBirthDate());
         user.setPhone(userSignup.getPhone());
+        user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
+        userRepository.save(user);
         if (userSignup.getCenterId() != null) {
             Center center = centerRepository.findById(userSignup.getCenterId())
                     .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
             if (userSignup.getRoles().get(0).equals("DOCTOR")) {
                 user.setCenter(center);
                 center.addDoctor(user);
+            } else if (userSignup.getRoles().get(0).equals("ADMIN")) {
+                user.setCenter(center);
+                center.addAdmin(user);
             }
             centerRepository.save(center);
-
         }
         if (userSignup.getRoles() != null) {
             user.setRoles(userSignup.getRoles());
@@ -92,11 +97,10 @@ public class UserController {
             user.setRoles(roles);
         }
 
-        user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
         userRepository.save(user);
-
+        ProfileView userProfileView = new ProfileView(user);
         return ResponseHandler.generateResponse("User successfully created", HttpStatus.CREATED,
-                userRepository.save(user));
+                userProfileView);
     }
 
     @PutMapping(path = "/private/users/{id}")
@@ -126,30 +130,36 @@ public class UserController {
         if (userDetails.getBirthDate() == null || userDetails.getBirthDate().toString().isEmpty()) {
             return ResponseHandler.generateResponse("Birth date is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (userDetails.getPassword() == null || userDetails.getPassword().isEmpty()) {
-            return ResponseHandler.generateResponse("Password is required", HttpStatus.BAD_REQUEST, null);
-        }
         if (userDetails.getRoles() == null || userDetails.getRoles().isEmpty()) {
             return ResponseHandler.generateResponse("Role is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty()) {
+        if (!userDetails.getRoles().get(0).equals("SUPERADMIN")
+                && (userDetails.getCenterId() == null || userDetails.getCenterId().toString().isEmpty())) {
             return ResponseHandler.generateResponse("Center id is required", HttpStatus.BAD_REQUEST, null);
         }
-
-        Center center = centerRepository.findById(userDetails.getCenterId())
-                .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
 
         user.setFirstName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
         user.setPhone(userDetails.getPhone());
         user.setBirthDate(userDetails.getBirthDate());
-        user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        if (userDetails.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
         user.setPhone(userDetails.getPhone());
+        user.setDisabled(userDetails.getDisabled());
         user.setRoles(userDetails.getRoles());
-        user.setCenter(center);
-        User updatedUser = userRepository.save(user);
-        return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser);
+        if (!userDetails.getRoles().get(0).equals("SUPERADMIN")) {
+            Center center = centerRepository.findById(userDetails.getCenterId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
+            user.setCenter(center);
+        }
+
+        Optional<ProfileView> updatedUser = Optional.of(new ProfileView(userRepository.save(user))); // TODO fonctionne
+                                                                                                     // mais à vérifier
+                                                                                                     // si ça génère pas
+                                                                                                     // de bug ailleurs
+        return ResponseHandler.generateResponse("User successfully updated", HttpStatus.OK, updatedUser.get());
     }
 
     @DeleteMapping(path = "/private/users/{id}")

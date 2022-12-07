@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.dao.UserRepository;
+import org.polytech.covidapi.dto.ProfileView;
 import org.polytech.covidapi.entities.Center;
 import org.polytech.covidapi.entities.ERole;
 import org.polytech.covidapi.entities.User;
@@ -38,61 +39,58 @@ public class CenterAdminController {
         this.userRepository = userRepository;
     }
 
-    // TODO : faire le même principe que pour les docteurs
-    // donc un admin de centre
-
     @GetMapping(path = "/private/centers/{id}/admins")
-    public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id)
+    public ResponseEntity<Object> findAllAdminsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)
-                && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+        // TODO Enlever ADMIN
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
 
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Admins successfully retrieved", HttpStatus.OK, center.getAdmins());
+        return ResponseHandler.generateResponse("Admins successfully retrieved", HttpStatus.OK, ProfileView.convert(center.getAdmins()));
     }
 
     @PostMapping(path = "/private/centers/{id}/admins")
-    public ResponseEntity<Object> addDoctorToCenter(@PathVariable("id") int id, @RequestBody User doctorDetails)
+    public ResponseEntity<Object> addAdminToCenter(@PathVariable("id") int id, @RequestBody User adminDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
 
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        User doctor = userRepository.findById(doctorDetails.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+        User admin = userRepository.findById(adminDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
         List<String> roles = new ArrayList<String>();
-        roles.add("DOCTOR");
-        doctor.setRoles(roles);
-        userRepository.save(doctor);
-        center.addDoctor(doctor);
+        roles.add("ADMIN");
+        admin.setRoles(roles);
+        userRepository.save(admin);
+        center.addAdmin(admin);
         centerRepository.save(center);
-        return ResponseHandler.generateResponse("Doctor successfully added to center", HttpStatus.OK, center);
+        return ResponseHandler.generateResponse("Admin successfully added to center", HttpStatus.OK, center);
     }
 
-    @DeleteMapping(path = "/private/centers/{id}/admins/{doctorId}")
-    public ResponseEntity<Object> removeDoctorFromCenter(@PathVariable("id") int id,
-            @PathVariable("doctorId") int doctorId) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+    @DeleteMapping(path = "/private/centers/{id}/admins/{adminId}")
+    public ResponseEntity<Object> removeAdminFromCenter(@PathVariable("id") int id,
+            @PathVariable("adminId") int adminId) throws ResourceNotFoundException {
+        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        User doctor = userRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+        User admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
         List<String> roles = new ArrayList<String>();
         roles.add("USER");
-        doctor.setRoles(roles);
-        userRepository.save(doctor);
-        center.removeDoctor(doctor);
+        admin.setRoles(roles);
+        userRepository.save(admin);
+        center.removeAdmin(admin);
         centerRepository.save(center);
-        return ResponseHandler.generateResponse("Doctor successfully removed from center", HttpStatus.OK, center);
+        return ResponseHandler.generateResponse("Admin successfully removed from center", HttpStatus.OK, center);
     }
 }
