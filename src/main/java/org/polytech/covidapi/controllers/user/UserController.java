@@ -67,7 +67,7 @@ public class UserController {
                     null);
         }
         return ResponseHandler.generateResponse("Superadmins successfully retrieved", HttpStatus.OK,
-                ProfileView.convert(userRepository.findByRolesOrderByLastNameAsc("SUPERADMIN")));
+                ProfileView.convert(userRepository.findByRolesOrderByIdAsc("SUPERADMIN")));
     }
 
     @PostMapping(path = "/private/users")
