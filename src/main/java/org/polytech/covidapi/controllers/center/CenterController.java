@@ -50,16 +50,20 @@ public class CenterController {
     public ResponseEntity<Object> findAllCentersByCity(@PathVariable String city,
             @PageableDefault(size = 15) Pageable p) {
         city = Base64Service.decode(city);
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                centerRepository.findAllCentersByCityContainingIgnoreCase(city, p));
+        Page<Center> page = centerRepository.findAllCentersByCityContainingIgnoreCase(city, p);
+            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                    new PageImpl<CenterPreviewView>(
+                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
     public ResponseEntity<Object> findAllCentersByName(@PathVariable String name,
             @PageableDefault(size = 15) Pageable p) {
         name = Base64Service.decode(name);
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                centerRepository.findAllCentersByNameContainingIgnoreCase(name, p));
+        Page<Center> page = centerRepository.findAllCentersByNameContainingIgnoreCase(name, p);
+            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                    new PageImpl<CenterPreviewView>(
+                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
     @GetMapping(path = "/public/centers")
