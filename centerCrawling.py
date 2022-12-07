@@ -21,9 +21,12 @@ for center in r['features']:
     zip_code = center['properties']['c_com_cp']
     number = center['properties']['c_adr_num'] if center['properties']['c_adr_num'] else ""
     street = center['properties']['c_adr_voie'] if center['properties']['c_adr_voie'] else ""
-    address = (number + ", " + street).strip()
+    if number != "" and street != "":
+        address = (number + ", " + street).strip()
+    else:
+        address = (number + street).strip()
     phone_number = center['properties']['c_rdv_tel']
-    print("{}, {}, {} {}".format(center_name, address, zip_code, city))
+    print("{}".format(address))
     req = cur.execute('SELECT id FROM centers WHERE name = %s', (center_name,))
     exists = cur.fetchone()
     if exists is not None:
