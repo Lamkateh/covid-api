@@ -67,7 +67,7 @@ public class CenterController {
     }
 
     @GetMapping(path = "/public/centers")
-    public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 15) Pageable p) {
+    public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 16) Pageable p) {
 
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
