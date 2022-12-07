@@ -22,7 +22,7 @@ for center in r['features']:
     number = center['properties']['c_adr_num'] if center['properties']['c_adr_num'] else ""
     street = center['properties']['c_adr_voie'] if center['properties']['c_adr_voie'] else ""
     if number != "" and street != "":
-        address = (number + ", " + street).strip()
+        address = (number + " " + street).strip()
     else:
         address = (number + street).strip()
     phone_number = center['properties']['c_rdv_tel']
