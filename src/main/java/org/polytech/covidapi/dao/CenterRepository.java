@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CenterRepository extends JpaRepository<Center, Integer> {
 
-    //@Query("Select c from Center c join fetch c.doctors where c.city = :city")
     Page<Center> findAllCentersByCityContainingIgnoreCase(String city, Pageable p);
     Page<Center> findAllCentersByNameContainingIgnoreCase(String name, Pageable p);
     Page<Center> findAllByOrderByCityAsc(Pageable p);
