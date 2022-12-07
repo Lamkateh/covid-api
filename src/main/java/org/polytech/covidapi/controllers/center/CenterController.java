@@ -84,7 +84,8 @@ public class CenterController {
     public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) throws ResourceNotFoundException {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, center);
+        CenterPreviewView centerPreview = new CenterPreviewView(center);
+        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, centerPreview);
     }
 
     @PostMapping(path = "/private/centers")
