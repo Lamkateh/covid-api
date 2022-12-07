@@ -152,7 +152,7 @@ public class CenterController {
 
     @DeleteMapping(path = "/private/centers/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.ADMIN)) { //TODO
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
