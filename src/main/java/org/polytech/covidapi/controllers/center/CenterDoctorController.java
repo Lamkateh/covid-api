@@ -42,7 +42,7 @@ public class CenterDoctorController {
     @GetMapping(path = "/private/centers/{id}/doctors")
     public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)
                 && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
@@ -57,7 +57,7 @@ public class CenterDoctorController {
     @PostMapping(path = "/private/centers/{id}/doctors")
     public ResponseEntity<Object> addDoctorToCenter(@PathVariable("id") int id, @RequestBody User doctorDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -78,7 +78,7 @@ public class CenterDoctorController {
     @DeleteMapping(path = "/private/centers/{id}/doctors/{doctorId}")
     public ResponseEntity<Object> removeDoctorFromCenter(@PathVariable("id") int id,
             @PathVariable("doctorId") int doctorId) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping(path = "/private/users")
     public ResponseEntity<Object> index() {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -51,7 +51,7 @@ public class UserController {
 
     @GetMapping(path = "/private/users/{id}")
     public ResponseEntity<Object> show(@PathVariable("id") int id) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -62,7 +62,7 @@ public class UserController {
 
     @GetMapping(path = "/private/superadmins")
     public ResponseEntity<Object> superadmins() {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) { //TODO only superadmins
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) { //TODO only superadmins
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -72,7 +72,7 @@ public class UserController {
 
     @PostMapping(path = "/private/users")
     public ResponseEntity<Object> store(@RequestBody SignupUserView userSignup) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource",
                     HttpStatus.FORBIDDEN,
                     null);
@@ -115,7 +115,7 @@ public class UserController {
     @PutMapping(path = "/private/users/{id}")
     public ResponseEntity<Object> update(@PathVariable int id, @RequestBody SignupUserView userDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

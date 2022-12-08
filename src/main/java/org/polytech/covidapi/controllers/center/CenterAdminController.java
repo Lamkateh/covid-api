@@ -44,7 +44,7 @@ public class CenterAdminController {
     public ResponseEntity<Object> findAllAdminsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
         // TODO Enlever ADMIN
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -58,7 +58,7 @@ public class CenterAdminController {
     @PostMapping(path = "/private/centers/{id}/admins")
     public ResponseEntity<Object> addAdminToCenter(@PathVariable("id") int id, @RequestBody User adminDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -79,7 +79,7 @@ public class CenterAdminController {
     @DeleteMapping(path = "/private/centers/{id}/admins/{adminId}")
     public ResponseEntity<Object> removeAdminFromCenter(@PathVariable("id") int id,
             @PathVariable("adminId") int adminId) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
