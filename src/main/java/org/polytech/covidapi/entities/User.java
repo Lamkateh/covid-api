@@ -40,10 +40,10 @@ public class User {
     @ElementCollection
     private List<String> roles;
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Appointment> appointmentsAsPatient;
 
-    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Appointment> appointmentsAsDoctor;
 
     @ManyToOne(targetEntity = Center.class)
