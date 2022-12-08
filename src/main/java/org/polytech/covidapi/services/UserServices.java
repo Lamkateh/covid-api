@@ -35,6 +35,8 @@ public class UserServices implements UserDetailsService {
         List<String> roles = new ArrayList<String>();
         roles.add("USER");
         user.setEmail("user@gmail.com");
+        user.setLastName("user");
+        user.setFirstName("user");
         Optional<User> userSearch = userRepository.findFirstByEmail("user@gmail.com");
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode("password"));
@@ -44,6 +46,8 @@ public class UserServices implements UserDetailsService {
 
         User admin = new User();
         admin.setEmail("admin@gmail.com");
+        admin.setLastName("admin");
+        admin.setFirstName("admin");
         List<String> rolesAdmin = new ArrayList<String>();
         rolesAdmin.add("ADMIN");
         admin.setRoles(rolesAdmin);
