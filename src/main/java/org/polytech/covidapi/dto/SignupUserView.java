@@ -13,7 +13,7 @@ public class SignupUserView {
     private String password;
     private List<String> roles;
     private Integer centerId;
-    private LocalDate birthDate;
+    private String birthDate;
     private String phone;
     private Boolean disabled;
     public SignupUserView() {
@@ -31,7 +31,7 @@ public class SignupUserView {
         } else {
             this.centerId = null;
         }
-        this.birthDate = user.getBirthDate();
+        this.birthDate = user.getBirthDate().toString();
         this.phone = user.getPhone();
         this.disabled = user.getDisabled();
     }
@@ -56,7 +56,7 @@ public class SignupUserView {
         return centerId;
     }
 
-    public LocalDate getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
