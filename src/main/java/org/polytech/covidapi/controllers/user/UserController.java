@@ -157,7 +157,9 @@ public class UserController {
         user.setPhone(userDetails.getPhone());
         user.setDisabled(userDetails.getDisabled());
         user.setRoles(userDetails.getRoles());
-        if (!userDetails.getRoles().get(0).equals("SUPERADMIN")) {
+        if (userDetails.getRoles().get(0).equals("SUPERADMIN")) {
+            user.setCenter(null);
+        } else {
             Center center = centerRepository.findById(userDetails.getCenterId())
                     .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
             user.setCenter(center);
@@ -168,7 +170,7 @@ public class UserController {
 
     @DeleteMapping(path = "/private/users/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
-        if (!authenticationFacade.hasRole(ERole.ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
