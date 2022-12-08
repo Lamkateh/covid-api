@@ -57,12 +57,12 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password));
         } catch (Exception e) {
-            return ResponseHandler.generateResponse("Invalid credentials", HttpStatus.BAD_REQUEST, null);
+            return ResponseHandler.generateResponse("Les identifiants ne correspondent pas", HttpStatus.BAD_REQUEST, null);
         }
 
         User user = userRepository.findFirstByEmail(email).get();
         if (user.getDisabled()) {
-            return ResponseHandler.generateResponse("User is disabled", HttpStatus.BAD_REQUEST, null);
+            return ResponseHandler.generateResponse("L'utilisateur est désactivé", HttpStatus.BAD_REQUEST, null);
         }
 
         return ResponseHandler.generateResponse("User successfully logged in", HttpStatus.OK,

@@ -6,7 +6,7 @@ public enum ERole {
     USER,
     DOCTOR,
     ADMIN,
-    SUPER_ADMIN;
+    SUPERADMIN;
 
     private String text;
 

@@ -13,6 +13,7 @@ import org.polytech.covidapi.exception.ResourceNotFoundException;
 import org.polytech.covidapi.facade.IAuthenticationFacade;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +42,7 @@ public class CenterDoctorController {
     @GetMapping(path = "/private/centers/{id}/doctors")
     public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)
                 && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
@@ -49,13 +50,14 @@ public class CenterDoctorController {
 
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, ProfileView.convert(center.getDoctors()));
+        List<User> doctors = center.getDoctors();
+        return ResponseHandler.generateResponse("Doctors successfully retrieved", HttpStatus.OK, ProfileView.convert(doctors));
     }
 
     @PostMapping(path = "/private/centers/{id}/doctors")
     public ResponseEntity<Object> addDoctorToCenter(@PathVariable("id") int id, @RequestBody User doctorDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -76,7 +78,7 @@ public class CenterDoctorController {
     @DeleteMapping(path = "/private/centers/{id}/doctors/{doctorId}")
     public ResponseEntity<Object> removeDoctorFromCenter(@PathVariable("id") int id,
             @PathVariable("doctorId") int doctorId) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

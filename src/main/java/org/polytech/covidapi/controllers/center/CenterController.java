@@ -48,22 +48,26 @@ public class CenterController {
 
     @GetMapping(path = "/public/centers/city/{city}")
     public ResponseEntity<Object> findAllCentersByCity(@PathVariable String city,
-            @PageableDefault(size = 15) Pageable p) {
+            @PageableDefault(size = 16) Pageable p) {
         city = Base64Service.decode(city);
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                centerRepository.findAllCentersByCityContainingIgnoreCase(city, p));
+        Page<Center> page = centerRepository.findAllCentersByCityContainingIgnoreCase(city, p);
+            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                    new PageImpl<CenterPreviewView>(
+                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
     public ResponseEntity<Object> findAllCentersByName(@PathVariable String name,
-            @PageableDefault(size = 15) Pageable p) {
+            @PageableDefault(size = 16) Pageable p) {
         name = Base64Service.decode(name);
-        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                centerRepository.findAllCentersByNameContainingIgnoreCase(name, p));
+        Page<Center> page = centerRepository.findAllCentersByNameContainingIgnoreCase(name, p);
+            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                    new PageImpl<CenterPreviewView>(
+                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
     @GetMapping(path = "/public/centers")
-    public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 15) Pageable p) {
+    public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 16) Pageable p) {
 
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
@@ -84,13 +88,14 @@ public class CenterController {
     public ResponseEntity<Object> findCenterById(@PathVariable("id") int id) throws ResourceNotFoundException {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, center);
+        CenterPreviewView centerPreview = new CenterPreviewView(center);
+        return ResponseHandler.generateResponse("Center successfully retrieved", HttpStatus.OK, centerPreview);
     }
 
     @PostMapping(path = "/private/centers")
     public ResponseEntity<Object> store(@RequestBody Center center) {
 
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) &&
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN) &&
                 !authenticationFacade.hasRole(ERole.ADMIN)) { // TODO remove admin
             return ResponseHandler.generateResponse("You are not allowed to access this resource",
                     HttpStatus.FORBIDDEN,
@@ -110,7 +115,7 @@ public class CenterController {
     @PutMapping(path = "/private/centers/{id}")
     public ResponseEntity<Object> update(@PathVariable int id, @RequestBody Center centerDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN) && !authenticationFacade.hasRole(ERole.ADMIN)) { // TODO
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN) && !authenticationFacade.hasRole(ERole.ADMIN)) { // TODO
                                                                                                               // remove
                                                                                                               // admin?x
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
@@ -124,29 +129,30 @@ public class CenterController {
         if (centerDetails.getName() == null || centerDetails.getName().isEmpty()) {
             return ResponseHandler.generateResponse("Name is required", HttpStatus.BAD_REQUEST, null);
         }
-        if (centerDetails.getAddress() == null || centerDetails.getAddress().isEmpty()) {
-            return ResponseHandler.generateResponse("Address is required", HttpStatus.BAD_REQUEST, null);
-        }
-        if (centerDetails.getCity() == null || centerDetails.getCity().isEmpty()) {
-            return ResponseHandler.generateResponse("City is required", HttpStatus.BAD_REQUEST, null);
-        }
-        if (centerDetails.getZipCode() == null || centerDetails.getZipCode().isEmpty()) {
-            return ResponseHandler.generateResponse("ZipCode is required", HttpStatus.BAD_REQUEST, null);
-        }
 
         center.setName(centerDetails.getName());
-        center.setCity(centerDetails.getCity());
-        center.setAddress(centerDetails.getAddress());
-        center.setPhone(centerDetails.getPhone());
-        center.setZipCode(centerDetails.getZipCode());
-        center.setEmail(centerDetails.getEmail());
+        if (centerDetails.getCity() != null && !centerDetails.getCity().isEmpty()) {
+            center.setCity(centerDetails.getCity());
+        }
+        if (centerDetails.getAddress() != null && !centerDetails.getAddress().isEmpty()) {
+            center.setAddress(centerDetails.getAddress());
+        }
+        if (centerDetails.getPhone() != null && !centerDetails.getPhone().isEmpty()) {
+            center.setPhone(centerDetails.getPhone());
+        }
+        if (centerDetails.getZipCode() != null && !centerDetails.getZipCode().isEmpty()) {
+            center.setZipCode(centerDetails.getZipCode());
+        }
+        if (centerDetails.getEmail() != null && !centerDetails.getEmail().isEmpty()) {
+            center.setEmail(centerDetails.getEmail());
+        }
         Center updatedCenter = centerRepository.save(center);
         return ResponseHandler.generateResponse("Center successfully updated", HttpStatus.OK, updatedCenter);
     }
 
     @DeleteMapping(path = "/private/centers/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN) && !authenticationFacade.hasRole(ERole.ADMIN)) { //TODO
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

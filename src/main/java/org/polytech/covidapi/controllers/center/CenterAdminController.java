@@ -13,6 +13,7 @@ import org.polytech.covidapi.exception.ResourceNotFoundException;
 import org.polytech.covidapi.facade.IAuthenticationFacade;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,20 +44,21 @@ public class CenterAdminController {
     public ResponseEntity<Object> findAllAdminsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
         // TODO Enlever ADMIN
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
 
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Center not found"));
-        return ResponseHandler.generateResponse("Admins successfully retrieved", HttpStatus.OK, ProfileView.convert(center.getAdmins()));
+        List<User> admins = center.getAdmins();
+        return ResponseHandler.generateResponse("Admins successfully retrieved", HttpStatus.OK, ProfileView.convert(admins));
     }
 
     @PostMapping(path = "/private/centers/{id}/admins")
     public ResponseEntity<Object> addAdminToCenter(@PathVariable("id") int id, @RequestBody User adminDetails)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -77,7 +79,7 @@ public class CenterAdminController {
     @DeleteMapping(path = "/private/centers/{id}/admins/{adminId}")
     public ResponseEntity<Object> removeAdminFromCenter(@PathVariable("id") int id,
             @PathVariable("adminId") int adminId) throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.SUPER_ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
