@@ -169,7 +169,7 @@ public class AppointmentController {
                         appointment.getCenter().getId()));
     }
 
-    @PutMapping(path = "/private/appointments/{id}/isDone")
+    @PutMapping(path = "/private/appointments/{id}")
     public ResponseEntity<Object> AppointmentDone(@PathVariable("id") int appointment_id) {
 
         if (!authenticationFacade.hasRole(ERole.DOCTOR)) { // TODO

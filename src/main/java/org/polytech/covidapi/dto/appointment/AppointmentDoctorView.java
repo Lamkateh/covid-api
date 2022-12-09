@@ -9,17 +9,21 @@ import org.polytech.covidapi.entities.Appointment;
 
 public class AppointmentDoctorView {
 
+    private int id;
     private LocalTime time;
     private LocalDate date;
     private ProfileView patient;
+    private boolean isDone;
 
     public AppointmentDoctorView() {
 
     }
 
     public AppointmentDoctorView(Appointment appointment) {
+        this.id = appointment.getId();
         this.time = appointment.getTime();
         this.date = appointment.getDate();
+        this.isDone = appointment.getIsDone();
         if (appointment.getPatient() != null) {
             this.patient = new ProfileView(appointment.getPatient());
         } else {
@@ -27,6 +31,9 @@ public class AppointmentDoctorView {
         }
     }
 
+    public int getId() {
+        return id;
+    }
     public LocalTime getTime() {
         return time;
     }
@@ -37,6 +44,10 @@ public class AppointmentDoctorView {
 
     public ProfileView getPatient() {
         return patient;
+    }
+
+    public boolean getIsDone() {
+        return isDone;
     }
 
     public static List<AppointmentDoctorView> convert(List<Appointment> center) {
