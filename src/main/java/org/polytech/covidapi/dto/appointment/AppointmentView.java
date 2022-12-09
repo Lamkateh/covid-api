@@ -2,6 +2,9 @@ package org.polytech.covidapi.dto.appointment;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+
+import org.polytech.covidapi.entities.Appointment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -46,4 +49,5 @@ public class AppointmentView {
     public void setCenterId(int centerId) {
         this.centerId = centerId;
     }
+
 }
