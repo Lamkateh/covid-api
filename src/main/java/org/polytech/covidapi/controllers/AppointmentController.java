@@ -10,11 +10,14 @@ import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.dao.UserRepository;
 import org.polytech.covidapi.dto.AppointmentsCenterView;
 import org.polytech.covidapi.dto.DayView;
+import org.polytech.covidapi.dto.appointment.AppointmentDoctorView;
 import org.polytech.covidapi.dto.appointment.AppointmentPreviewView;
 import org.polytech.covidapi.dto.appointment.AppointmentView;
 import org.polytech.covidapi.entities.Appointment;
 import org.polytech.covidapi.entities.Center;
+import org.polytech.covidapi.entities.ERole;
 import org.polytech.covidapi.entities.User;
+import org.polytech.covidapi.facade.IAuthenticationFacade;
 import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +38,8 @@ public class AppointmentController {
     private CenterRepository centerRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     @GetMapping(path = "/public/centers/{id}/appointments")
     public ResponseEntity<Object> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) {
@@ -92,6 +98,28 @@ public class AppointmentController {
                 new AppointmentsCenterView(days, startTime, closeTime));
     }
 
+    @GetMapping(path = "/private/doctors/{id}/appointments")
+    public ResponseEntity<Object> findAllAppointmentsByDoctor(@PathVariable("id") int doctor_id) {
+
+        if (!authenticationFacade.hasRole(ERole.DOCTOR)) { // TODO
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
+
+        User doctor = null;
+        try {
+            doctor = userRepository.findFirstById(doctor_id);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse("Doctor not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByDoctorOrderByDateAsc(doctor);
+
+        return ResponseHandler.generateResponse("Appointment successfully retrieved", HttpStatus.OK,
+                AppointmentDoctorView.convert(appointments));
+
+    }
+
     @PostMapping(path = "/private/centers/{id}/appointments")
     public ResponseEntity<Object> registerAppointment(@PathVariable("id") int center_id,
             @RequestParam("patient_id") String patient_id,
@@ -137,6 +165,30 @@ public class AppointmentController {
 
         appointmentRepository.save(appointment);
         return ResponseHandler.generateResponse("Appointment successfully registered", HttpStatus.OK,
+                new AppointmentView(appointment.getTime(), appointment.getDate(),
+                        appointment.getCenter().getId()));
+    }
+
+    @PutMapping(path = "/private/appointments/{id}/isDone")
+    public ResponseEntity<Object> AppointmentDone(@PathVariable("id") int appointment_id) {
+
+        if (!authenticationFacade.hasRole(ERole.DOCTOR)) { // TODO
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
+
+        Appointment appointment = null;
+        try {
+            appointment = appointmentRepository.findFirstById(appointment_id);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse("Appointment not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        appointment.setIsDone(true);
+
+        appointmentRepository.save(appointment);
+
+        return ResponseHandler.generateResponse("Appointment successfully updated", HttpStatus.OK,
                 new AppointmentView(appointment.getTime(), appointment.getDate(),
                         appointment.getCenter().getId()));
     }
