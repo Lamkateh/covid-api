@@ -1,5 +1,7 @@
 package org.polytech.covidapi.controllers.user;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -85,7 +87,7 @@ public class UserController {
         user.setFirstName(userSignup.getFirstName());
         user.setLastName(userSignup.getLastName());
         user.setEmail(userSignup.getEmail());
-        user.setBirthDate(userSignup.getBirthDate());
+        user.setBirthDate(LocalDate.parse(userSignup.getBirthDate().toString()));
         user.setPhone(userSignup.getPhone());
         user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
         userRepository.save(user);
@@ -150,7 +152,7 @@ public class UserController {
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
         user.setPhone(userDetails.getPhone());
-        user.setBirthDate(userDetails.getBirthDate());
+        user.setBirthDate(LocalDate.parse(userDetails.getBirthDate()));
         if (userDetails.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
         }
