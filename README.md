@@ -16,7 +16,7 @@ L'objectif de ce projet est de créer un site web permettant tout d'abord la pri
 
 Tout d'abord, vous pourrez retrouver la partie front-end sur ce lien github : https://github.com/Lamkateh/covid-ng-app.
 
-Ensuite, pour lancer simplement le projet, il vous suffit de cloner les deux répertoire github et de lancer la commande suivante sur le répertoire contenant les deux clones : 
+Ensuite, pour lancer simplement le projet, il vous suffit de cloner les deux répertoire github et de lancer la commande suivante sur un des répertoires (Attention à bien mettre les deux répertoires dans le même dossier) : 
 
 ```bash
 docker compose up
