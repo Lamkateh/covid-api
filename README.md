@@ -75,7 +75,7 @@ docker run -it --rm --name centercrawling -v "$PWD/covid-api/crawling:/usr/src/c
 ```
 
 ## Fonctionnalités
-### 1 - Se connecter et s'incrire
+### 1 - Se connecter, s'incrire et se déconnecter
 Tout d'abord, il est nécessaire de se connecter et de s'inscrire sur le site web afin de pouvoir utiliser les différentes fonctionnalités du site. 
 Pour cela, il faut cliquer sur le bouton `Se connecter` de la barre de navigation. Une fois sur la page de connexion, il est possible de se connecter avec un compte existant :
 
@@ -84,6 +84,8 @@ Pour cela, il faut cliquer sur le bouton `Se connecter` de la barre de navigatio
 Pour s'inscrire, il suffit de cliquer sur le lien `Pas encore inscrit ? Inscrivez-vous ici`. Une fois l'inscription effectuée, il est possible de se connecter avec le compte créé :
 
 ![Inscription](/doc_ressources/signup.png)
+
+Une fois connecté, il est possible de se déconnecter en cliquant sur le bouton `Se déconnecter` de la barre de navigation.
 
 ### 2 - Les différents rôles
 Chaque utilisateur de notre site web peut avoir 4 rôles différents :
