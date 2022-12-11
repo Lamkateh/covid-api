@@ -1,5 +1,6 @@
 package org.polytech.covidapi.controllers;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -67,5 +68,26 @@ public class AuthController {
 
         return ResponseHandler.generateResponse("User successfully logged in", HttpStatus.OK,
                 new ProfileView(user));
+    }
+
+    @PostMapping(path = "/public/signup")
+    public ResponseEntity<Object> signup(@RequestBody SignupUserView userSignup) {
+
+        Optional<User> userSearch = userRepository.findFirstByEmail(userSignup.getEmail());
+        if (userSearch.isPresent()) {
+            return ResponseHandler.generateResponse("Error: Email is already taken!", HttpStatus.BAD_REQUEST, null);
+        }
+        User user = new User();
+        user.setFirstName(userSignup.getFirstName());
+        user.setLastName(userSignup.getLastName());
+        user.setEmail(userSignup.getEmail());
+        user.setBirthDate(LocalDate.parse(userSignup.getBirthDate()));
+        user.setPhone(userSignup.getPhone());
+        List<String> roles = Arrays.asList("PATIENT");
+        user.setRoles(roles);
+        user.setPassword(passwordEncoder.encode(userSignup.getPassword()));
+        userRepository.save(user);
+
+        return ResponseHandler.generateResponse("User registered successfully!", HttpStatus.OK, new ProfileView(user));
     }
 }
