@@ -10,6 +10,7 @@ import org.polytech.covidapi.dao.CenterRepository;
 import org.polytech.covidapi.dao.UserRepository;
 import org.polytech.covidapi.dto.AppointmentsCenterView;
 import org.polytech.covidapi.dto.DayView;
+import org.polytech.covidapi.dto.appointment.AppointmentAdminView;
 import org.polytech.covidapi.dto.appointment.AppointmentDoctorView;
 import org.polytech.covidapi.dto.appointment.AppointmentPreviewView;
 import org.polytech.covidapi.dto.appointment.AppointmentView;
@@ -98,10 +99,31 @@ public class AppointmentController {
                 new AppointmentsCenterView(days, startTime, closeTime));
     }
 
+    @GetMapping(path = "/private/admins/{id}/appointments")
+    public ResponseEntity<Object> findAllAppointmentsByAdmin(@PathVariable("id") int admin_id) {
+
+        if (!authenticationFacade.hasRole(ERole.ADMIN)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
+
+        User admin = null;
+        try {
+            admin = userRepository.findFirstById(admin_id);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse("Admin not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByCenterOrderByDateAsc(admin.getCenter());
+
+        return ResponseHandler.generateResponse("Appointment successfully retrieved", HttpStatus.OK,
+                AppointmentAdminView.convert(appointments));
+    }
+
     @GetMapping(path = "/private/doctors/{id}/appointments")
     public ResponseEntity<Object> findAllAppointmentsByDoctor(@PathVariable("id") int doctor_id) {
 
-        if (!authenticationFacade.hasRole(ERole.DOCTOR) && !authenticationFacade.hasRole(ERole.ADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

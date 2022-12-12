@@ -15,8 +15,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     // @Query("Select c from Center c join fetch c.doctors where c.city = :city")
     List<Appointment> findAppointmentsByCenterAndDate(Center center, LocalDate appointmentDate);
 
+    List<Appointment> findAppointmentsByCenterOrderByDateAsc(Center center);
+
     List<Appointment> findAppointmentsByDoctorOrderByDateAsc(User doctor);
 
     Appointment findFirstById(int id);
-
 }
