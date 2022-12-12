@@ -45,10 +45,10 @@ public class AppointmentController {
     @GetMapping(path = "/public/centers/{id}/appointments")
     public ResponseEntity<Object> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) {
 
-        //LocalDate nowDate = LocalDate.now().plusDays(4);
-        LocalDate nowDate = LocalDate.now();
-        //LocalTime nowTime = LocalTime.now().plusHours(24*4);
-        LocalTime nowTime = LocalTime.now();
+        LocalDate nowDate = LocalDate.now().minusDays(1);
+        //LocalDate nowDate = LocalDate.now();
+        LocalTime nowTime = LocalTime.now().minusHours(21);
+        //LocalTime nowTime = LocalTime.now();
 
         List<DayView> days = new ArrayList<DayView>();
         LocalTime time = nowTime.minusSeconds(LocalTime.now().getSecond())
@@ -76,7 +76,7 @@ public class AppointmentController {
                     int mod = unroundedMinutes % 15;
                     LocalTime timeRounded = time.plusMinutes((15 - mod));
                     while (timeRounded.isBefore(closeTime)) {
-                        if (!timeUnavailable.contains(timeRounded)) {
+                        if (!timeUnavailable.contains(timeRounded) && !timeRounded.isBefore(startTime)) {
                             AppointmentPreviewView appointment = new AppointmentPreviewView(timeRounded,
                                     center.getId());
                             appointmentsAvailable.add(appointment);
