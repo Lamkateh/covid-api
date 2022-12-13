@@ -71,7 +71,7 @@ public class AppointmentController {
                     int mod = unroundedMinutes % 15;
                     LocalTime timeRounded = time.plusMinutes((15 - mod));
                     while (timeRounded.isBefore(closeTime)) {
-                        if (!timeUnavailable.contains(timeRounded)) {
+                        if (!timeUnavailable.contains(timeRounded) && !timeRounded.isBefore(startTime)) {
                             AppointmentPreviewView appointment = new AppointmentPreviewView(timeRounded,
                                     center.getId());
                             appointmentsAvailable.add(appointment);
