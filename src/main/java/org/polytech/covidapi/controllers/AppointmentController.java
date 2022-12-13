@@ -192,7 +192,7 @@ public class AppointmentController {
     @PutMapping(path = "/private/appointments/{id}")
     public ResponseEntity<Object> AppointmentDone(@PathVariable("id") int appointment_id) {
 
-        if (!authenticationFacade.hasRole(ERole.DOCTOR)) { // TODO
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }

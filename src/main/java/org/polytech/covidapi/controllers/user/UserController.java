@@ -64,7 +64,7 @@ public class UserController {
 
     @GetMapping(path = "/private/superadmins")
     public ResponseEntity<Object> superadmins() {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) { //TODO only superadmins
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -125,7 +125,6 @@ public class UserController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // TODO : better validation
         if (userDetails.getFirstName() == null || userDetails.getFirstName().isEmpty()) {
             return ResponseHandler.generateResponse("First name is required", HttpStatus.BAD_REQUEST, null);
         }

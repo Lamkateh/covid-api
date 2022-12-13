@@ -19,7 +19,6 @@ public class SignupUserView {
     public SignupUserView() {
     }
 
-    //TODO : transform into entry DTO 
     public SignupUserView(User user) { 
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();

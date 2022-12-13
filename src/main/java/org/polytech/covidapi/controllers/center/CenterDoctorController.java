@@ -42,8 +42,7 @@ public class CenterDoctorController {
     @GetMapping(path = "/private/centers/{id}/doctors")
     public ResponseEntity<Object> findAllDoctorsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)
-                && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
