@@ -133,7 +133,7 @@ Enfin, la dernière fonctionnalité est la gestion des utilisateurs.
 
 Seul les supers administrateurs peuvent gérer les supers administrateurs depuis la page `Configuration` :
 
-Ils sont également les seuls à pouvoir gérer les administrateurs, en cliquant sur le bouton `Gérer les administrateurs et médecins` de chaque centre depuis la page `Gestion des centres` (ou en cliquant sur la petite icône ![Users_icon](/doc_ressources/users-icon.png) depuis la popup de modification d'un centre :
+Ils sont également les seuls à pouvoir gérer les administrateurs, en cliquant sur le bouton `Gérer les administrateurs et médecins` de chaque centre depuis la page `Gestion des centres` (ou en cliquant sur la petite icône ![Icône des utilisateurs](/doc_ressources/users_icon.png) depuis la popup de modification d'un centre :
 
 ![Gestions des administrateurs et des médecins](/doc_ressources/management_users.png)
 
@@ -143,7 +143,7 @@ Les administrateurs peuvent eux gérer seulement les médecins associés à leur
 
 ![Gestion de mon centre](/doc_ressources/management_center.png)
 
-Enfin, les médecins ne peuvent que gérer les rendez-vous de leurs patients depuis la page `Planning` :
+Enfin, les administrateurs ont aussi la possibilité de gérer les rendez-vous de leur centre. Les médecins eux peuvent gérer les rendez-vous de leurs patients. Dans les deux cas, cette gestion ce fait depuis la page `Planning` :
 
 ![Mon planning](/doc_ressources/planning.png)
 
