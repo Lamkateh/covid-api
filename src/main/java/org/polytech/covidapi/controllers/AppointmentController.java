@@ -23,12 +23,7 @@ import org.polytech.covidapi.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AppointmentController {
@@ -197,7 +192,7 @@ public class AppointmentController {
     @PutMapping(path = "/private/appointments/{id}")
     public ResponseEntity<Object> AppointmentDone(@PathVariable("id") int appointment_id) {
 
-        if (!authenticationFacade.hasRole(ERole.DOCTOR)) { // TODO
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
@@ -216,5 +211,15 @@ public class AppointmentController {
         return ResponseHandler.generateResponse("Appointment successfully updated", HttpStatus.OK,
                 new AppointmentView(appointment.getTime(), appointment.getDate(),
                         appointment.getCenter().getId()));
+    }
+
+    @DeleteMapping(path = "/private/appointments/{id}")
+    public ResponseEntity<Object> deleteAppointment(@PathVariable int id) {
+        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.DOCTOR)) {
+            return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
+                    null);
+        }
+        appointmentRepository.deleteById(id);
+        return ResponseHandler.generateResponse("Appointment successfully deleted", HttpStatus.OK, null);
     }
 }

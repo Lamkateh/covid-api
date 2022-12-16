@@ -43,8 +43,7 @@ public class CenterAdminController {
     @GetMapping(path = "/private/centers/{id}/admins")
     public ResponseEntity<Object> findAllAdminsByCenterId(@PathVariable("id") int id)
             throws ResourceNotFoundException {
-        // TODO Enlever ADMIN
-        if (!authenticationFacade.hasRole(ERole.ADMIN) && !authenticationFacade.hasRole(ERole.SUPERADMIN)) {
+        if (!authenticationFacade.hasRole(ERole.SUPERADMIN)) {
             return ResponseHandler.generateResponse("You are not allowed to access this resource", HttpStatus.FORBIDDEN,
                     null);
         }
