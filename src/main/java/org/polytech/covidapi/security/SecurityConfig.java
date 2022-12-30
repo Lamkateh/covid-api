@@ -31,7 +31,7 @@ public class SecurityConfig {
 
         )
                 .httpBasic(withDefaults())
-                .cors().disable()
+                .cors().and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);// On rend les session stateless
