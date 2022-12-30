@@ -26,42 +26,44 @@ Cela va lancer ce fichier docker compose :
 version: "3"
 
 services:
-  api:
-    container_name: api
-    build: ./covid-api
-    ports:
-      - "8080:8080"
-    environment:
-      DATABASE.HOST: db
-      DATABASE.PORT: 5432
-      DATABASE.PASSWORD: password
-      DATABASE.USERNAME: postgres
-      DATABASE.DB: covid-db
-    depends_on:
-      - db
-  db:
-    image: postgres:14
-    container_name: db
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: postgres
-      POSTGRES_DB: covid-db
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
-    volumes:
-      - db-data:/var/lib/postgresql/data
+    api:
+        container_name: api
+        build: ./covid-api
+        ports:
+            - "8080:8080"
+        environment:
+            DATABASE.HOST: db
+            DATABASE.PORT: 5432
+            DATABASE.PASSWORD: password
+            DATABASE.USERNAME: postgres
+            DATABASE.DB: covid-db
+            TZ: Europe/Paris
+        depends_on:
+            - db
+    db:
+        image: postgres:14
+        container_name: db
+        environment:
+            POSTGRES_PASSWORD: password
+            POSTGRES_USER: postgres
+            POSTGRES_DB: covid-db
+            PGDATA: /var/lib/postgresql/data/pgdata
+        ports:
+            - "5432:5432"
+        volumes:
+            - db-data:/var/lib/postgresql/data
 
-#    angular:
-#        container_name: angular
-#        build: ./covid-ng-app
-#        environment:
-#            API_URL: http://api:8080/
-#        ports:
-#          - "4200:80"
+        angular:
+            container_name: angular
+            build: ./covid-ng-app
+            environment:
+                API_URL: http://api:8080/
+                TZ: Europe/Paris
+            ports:
+                - "4200:80"
 
 volumes:
-  db-data:
+    db-data:
 ```
 
 Ainsi, vous pourrez accéder au site web sur le port 4200 et à l'api sur le port 8080.
@@ -75,8 +77,10 @@ docker run -it --rm --name centercrawling -v "$PWD/covid-api/crawling:/usr/src/c
 ```
 
 ## Fonctionnalités
+
 ### 1 - Se connecter, s'incrire et se déconnecter
-Tout d'abord, il est nécessaire de se connecter et de s'inscrire sur le site web afin de pouvoir utiliser les différentes fonctionnalités du site. 
+
+Tout d'abord, il est nécessaire de se connecter et de s'inscrire sur le site web afin de pouvoir utiliser les différentes fonctionnalités du site.
 Pour cela, il faut cliquer sur le bouton `Se connecter` de la barre de navigation. Une fois sur la page de connexion, il est possible de se connecter avec un compte existant :
 
 ![Connexion](/doc_ressources/login.png)
@@ -88,19 +92,21 @@ Pour s'inscrire, il suffit de cliquer sur le lien `Pas encore inscrit ? Inscrive
 Une fois connecté, il est possible de se déconnecter en cliquant sur le bouton `Se déconnecter` de la barre de navigation.
 
 ### 2 - Les différents rôles
+
 Chaque utilisateur de notre site web peut avoir 4 rôles différents :
 
-- Il peut être un simple patient avec le rôle `PATIENT`. Il pourra seulement prendre un rendez-vous dans un centre de vaccination.
+-   Il peut être un simple patient avec le rôle `PATIENT`. Il pourra seulement prendre un rendez-vous dans un centre de vaccination.
 
-- Il peut être un médecin avec le rôle `DOCTOR`. Il pourra gérer les rendez-vous de ses patients.
+-   Il peut être un médecin avec le rôle `DOCTOR`. Il pourra gérer les rendez-vous de ses patients.
 
-- Il peut être un administrateur avec le rôle `ADMIN`. Il pourra gérer les médecins associés à son centre de vaccination.
+-   Il peut être un administrateur avec le rôle `ADMIN`. Il pourra gérer les médecins associés à son centre de vaccination.
 
-- Enfin, il peut être un super administrateur avec le rôle `SUPERADMIN`. Il pourra gérer les centres de vaccination, les médecins, les administrateurs et les supers administrateurs.
+-   Enfin, il peut être un super administrateur avec le rôle `SUPERADMIN`. Il pourra gérer les centres de vaccination, les médecins, les administrateurs et les supers administrateurs.
 
 Il est à noter que tous les utilisateurs, peu importe leur rôle, peuvent prendre un rendez-vous dans un centre de vaccination.
 
 ### 3 - Les centres de vaccination
+
 Tout d'abord, la page d'accueil de notre application correspond à la requête GET `/public/centers`. Cette requête permet de récupérer tous les centres de vaccination (à noter que la partie public et private est supprimée dans l'url de la page web).
 
 ![Liste des centres](/doc_ressources/centres.png)
@@ -108,6 +114,7 @@ Tout d'abord, la page d'accueil de notre application correspond à la requête G
 On peut constater également qu'il est possible de faire une recherche par ville d'un centre.
 
 ### 4 - Les rendez-vous
+
 Une autre fonctionnalité est la prise de rendez-vous. Pour cela, il faut tout d'abord être connecté et qu'au moins un médecin soit associé au centre de vaccination. Ensuite, en cliquant sur ce dernier, on peut voir les rendez-vous disponibles avec la requête GET `/public/centers/{id}/appointments` :
 
 ![Liste des rendez-vous disponibles](/doc_ressources/appointments.png)
@@ -117,6 +124,7 @@ Une popup s'ouvre alors pour prendre un rendez-vous. Vous pouvez alors confirmer
 ![Confirmation d'un rendez-vous](/doc_ressources/confirm_appointment.png)
 
 ### 5 - Gestion des centres de vaccination
+
 En tant que super administrateur, il est possible d'ajouter, de modifier et de supprimer un centre depuis la page `Gestion des centres` :
 
 ![Gestion des centres](/doc_ressources/management_centers.png)
@@ -150,5 +158,3 @@ Enfin, les administrateurs ont aussi la possibilité de gérer les rendez-vous d
 ## Conclusion
 
 Cette application web permet de gérer les centres de vaccination et les rendez-vous. Elle permet également de gérer les utilisateurs et leurs rôles.
-
-

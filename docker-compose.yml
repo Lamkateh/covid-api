@@ -11,6 +11,7 @@ services:
             DATABASE.NAME: covid-db
             DATABASE.USER: postgres
             DATABASE.PASSWORD: postgres
+            TZ: Europe/Paris
         depends_on:
             - db
     db:
