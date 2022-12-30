@@ -40,10 +40,8 @@ public class AppointmentController {
     @GetMapping(path = "/public/centers/{id}/appointments")
     public ResponseEntity<Object> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) {
 
-        LocalDate nowDate = LocalDate.now().minusDays(1);
-        //LocalDate nowDate = LocalDate.now();
-        LocalTime nowTime = LocalTime.now().minusHours(21);
-        //LocalTime nowTime = LocalTime.now();
+        LocalDate nowDate = LocalDate.now();
+        LocalTime nowTime = LocalTime.now();
 
         List<DayView> days = new ArrayList<DayView>();
         LocalTime time = nowTime.minusSeconds(LocalTime.now().getSecond())
