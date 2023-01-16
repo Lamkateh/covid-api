@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import io.github.bucket4j.*;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 
 @RestController
 public class CenterController {
@@ -42,8 +44,12 @@ public class CenterController {
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
-    public CenterController(CenterRepository centerRepository) {
+    @Autowired
+    private MeterRegistry meterRegistry;
+
+    public CenterController(CenterRepository centerRepository, MeterRegistry meterRegistry) {
         this.centerRepository = centerRepository;
+        this.meterRegistry = meterRegistry;
     }
 
     @GetMapping(path = "/public/centers/city/{city}")
@@ -66,6 +72,7 @@ public class CenterController {
                         CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
+    @Timed(value = "centers.list.time", description = "Time spent retreiving centers")
     @GetMapping(path = "/public/centers")
     public ResponseEntity<Object> findAllCenters(@PageableDefault(size = 16) Pageable p) {
 
@@ -106,6 +113,7 @@ public class CenterController {
         }
 
         center = centerRepository.save(center);
+        meterRegistry.counter("centers.list.count").increment();
         CenterCreationView centerPreview = new CenterCreationView(center);
         return ResponseHandler.generateResponse("Center successfully stored", HttpStatus.OK, centerPreview);
     }
@@ -153,6 +161,7 @@ public class CenterController {
         }
 
         centerRepository.deleteById(id);
+        meterRegistry.counter("centers.list.count").increment(-1);
         return ResponseHandler.generateResponse("Center successfully deleted", HttpStatus.OK, null);
     }
 }

@@ -25,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.micrometer.core.instrument.MeterRegistry;
+
 @RestController
 public class AppointmentController {
 
@@ -36,6 +38,8 @@ public class AppointmentController {
     private UserRepository userRepository;
     @Autowired
     private IAuthenticationFacade authenticationFacade;
+    @Autowired
+    private MeterRegistry meterRegistry;
 
     @GetMapping(path = "/public/centers/{id}/appointments")
     public ResponseEntity<Object> findAllAppointmentsAvailableByCenterId(@PathVariable("id") int center_id) {
@@ -183,6 +187,7 @@ public class AppointmentController {
                 patient, doctor);
 
         appointmentRepository.save(appointment);
+        meterRegistry.counter("appointment.registered").increment();
         return ResponseHandler.generateResponse("Appointment successfully registered", HttpStatus.OK,
                 new AppointmentView(appointment.getTime(), appointment.getDate(),
                         appointment.getCenter().getId()));
@@ -219,6 +224,7 @@ public class AppointmentController {
                     null);
         }
         appointmentRepository.deleteById(id);
+        meterRegistry.counter("appointment.deleted").increment(-1);
         return ResponseHandler.generateResponse("Appointment successfully deleted", HttpStatus.OK, null);
     }
 }
