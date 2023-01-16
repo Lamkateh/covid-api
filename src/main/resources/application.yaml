@@ -1,20 +1,20 @@
 spring:
-    jackson:
-        time-zone: Europe/Paris
-    datasource:
-        url: jdbc:postgresql://${DATABASE.HOST:localhost}:${DATABASE.PORT:5432}/${DATABASE.NAME:covid-db}
-        username: ${DATABASE.USERNAME:postgres}
-        password: ${DATABASE.PASSWORD:password}
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
-        show-sql: true
-        hibernate:
-            ddl-auto: update
-    liquibase:
-        enabled: false
-        change-log: "classpath:db/changelog/dbchangelog.xml"
-    management:
-    endpoints:
-        web:
-            exposure:
-                include: health,info,prometheus,metrics
+  jackson:
+    time-zone: Europe/Paris
+  datasource:
+    url: jdbc:postgresql://${DATABASE.HOST:localhost}:${DATABASE.PORT:5432}/${DATABASE.NAME:covid-db}
+    username: ${DATABASE.USERNAME:postgres}
+    password: ${DATABASE.PASSWORD:password}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  liquibase:
+    enabled: false
+    change-log: "classpath:db/changelog/dbchangelog.xml"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

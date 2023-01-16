@@ -51,9 +51,9 @@ public class CenterController {
             @PageableDefault(size = 16) Pageable p) {
         city = Base64Service.decode(city);
         Page<Center> page = centerRepository.findAllCentersByCityContainingIgnoreCase(city, p);
-            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                    new PageImpl<CenterPreviewView>(
-                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                new PageImpl<CenterPreviewView>(
+                        CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
     @GetMapping(path = "/public/centers/name/{name}")
@@ -61,9 +61,9 @@ public class CenterController {
             @PageableDefault(size = 16) Pageable p) {
         name = Base64Service.decode(name);
         Page<Center> page = centerRepository.findAllCentersByNameContainingIgnoreCase(name, p);
-            return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
-                    new PageImpl<CenterPreviewView>(
-                            CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
+        return ResponseHandler.generateResponse("Centers successfully retrieved", HttpStatus.OK,
+                new PageImpl<CenterPreviewView>(
+                        CenterPreviewView.convert(page.getContent()), p, page.getTotalElements()));
     }
 
     @GetMapping(path = "/public/centers")

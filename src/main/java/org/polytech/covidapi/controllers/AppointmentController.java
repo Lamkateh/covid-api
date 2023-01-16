@@ -110,7 +110,8 @@ public class AppointmentController {
             return ResponseHandler.generateResponse("Admin not found", HttpStatus.NOT_FOUND, null);
         }
 
-        List<Appointment> appointments = appointmentRepository.findAppointmentsByCenterOrderByDateAsc(admin.getCenter());
+        List<Appointment> appointments = appointmentRepository
+                .findAppointmentsByCenterOrderByDateAsc(admin.getCenter());
 
         return ResponseHandler.generateResponse("Appointment successfully retrieved", HttpStatus.OK,
                 AppointmentAdminView.convert(appointments));

@@ -28,7 +28,8 @@ public class UserServices implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServices(final UserRepository utilisateurRepository, CenterRepository centerRepository, PasswordEncoder passwordEncoder) {
+    public UserServices(final UserRepository utilisateurRepository, CenterRepository centerRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = utilisateurRepository;
         this.centerRepository = centerRepository;
         this.passwordEncoder = passwordEncoder;
